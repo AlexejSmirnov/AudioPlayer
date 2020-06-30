@@ -23,7 +23,7 @@ class MyApplication : Application(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             var soundChannel = NotificationChannel(
                 CHANNEL_ID,
-                "MyPlayer Channel",
+                "AudioPlayer Channel",
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             soundChannel.setSound(null, null);

@@ -13,21 +13,24 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.pekadev.audioplayer.R
+import com.pekadev.audioplayer.model.SongItem
 import com.pekadev.audioplayer.repositoty.Repository
 import com.pekadev.audioplayer.view.application.MyApplication
 import com.pekadev.audioplayer.view.fragment.AudioSwitcherFragment
 import com.pekadev.audioplayer.view.service.BackgroundSongPlayerService
 
 object ExoPlayerController : PlayerController{
-    val soundList = Repository.getData()
     lateinit var  listAdapter: RecyclerView
-    var context = MyApplication.getApplicationContext()
     lateinit var service: BackgroundSongPlayerService
     lateinit var controllerFragment: AudioSwitcherFragment
+    private lateinit var songItem: SongItem
+
+    var context = MyApplication.getApplicationContext()
     var songIndex = MutableLiveData<Int>()
     var player: SimpleExoPlayer
-    private  var songMetadata = MediaMetadataRetriever()
+    val soundList = Repository.getData()
     private var lastPausedInt = -1
+    private var lastSong = -1
     init {
         val audioAttributes =
             AudioAttributes.Builder()
@@ -52,7 +55,7 @@ object ExoPlayerController : PlayerController{
             setSongId(index)
         }
         if (getSongId() ==-1){return}
-        val mediaSource = buildMediaSource(soundList.value!![getSongId()])
+        val mediaSource = buildMediaSource(soundList.value!![getSongId()].getUri())
         player.prepare(mediaSource)
         player.playWhenReady = true
         service.songChanged(soundList.value!![getSongId()])
@@ -117,10 +120,11 @@ object ExoPlayerController : PlayerController{
     }
 
     private fun getSongId(): Int{
-        return songIndex.value!!
+        return songIndex.value ?: -1
     }
 
     private fun setSongId(value: Int){
+        lastSong = getSongId()
         if (value>=0){
             setMetadata(value)
         }
@@ -131,8 +135,8 @@ object ExoPlayerController : PlayerController{
         return songIndex
     }
     private fun setMetadata(id: Int){
-        songMetadata.setDataSource(context, soundList.value!![id])
+        songItem = soundList.value!![id]
     }
-    fun getMetadata() = songMetadata
-
+    fun getMetadata() = songItem
+    fun getLastSong() = lastSong
 }

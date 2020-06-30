@@ -26,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 
 class AudioListFragment : Fragment(){
     val EXTERNAL_PERMS = arrayOf(
@@ -65,16 +66,7 @@ class AudioListFragment : Fragment(){
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(MyItemDecoration(15))
         viewModel.getMusicData().observe(viewLifecycleOwner, Observer {
-            GlobalScope.launch {
-                val metadataList  = it.map {
-                    var retriever = MediaMetadataRetriever()
-                    retriever.setDataSource(this@AudioListFragment.context, it)
-                    retriever
-                }
-                withContext(Dispatchers.Main){
-                    adapter.submitList(metadataList)
-                }
-            }
+            adapter.submitList(it)
         })
     }
 

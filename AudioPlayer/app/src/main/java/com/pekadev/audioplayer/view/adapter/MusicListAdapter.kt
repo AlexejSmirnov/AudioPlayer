@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.pekadev.audioplayer.R
 import com.pekadev.audioplayer.Util
+import com.pekadev.audioplayer.model.SongItem
 import com.pekadev.audioplayer.repositoty.Repository
 import com.pekadev.audioplayer.view.customview.CustomCoverImageView
 import com.pekadev.audioplayer.view.application.MyApplication
@@ -21,21 +22,21 @@ import com.pekadev.audioplayer.view.player.ExoPlayerController
 import com.pekadev.audioplayer.view.service.BackgroundSongPlayerService
 import kotlinx.android.synthetic.main.music_item.view.*
 
-class MusicListAdapter : ListAdapter<MediaMetadataRetriever, MusicListAdapter.MusicViewHolder>(DIFF_CALLBACK){
+class MusicListAdapter : ListAdapter<SongItem, MusicListAdapter.MusicViewHolder>(DIFF_CALLBACK){
     companion object{
-        private val DIFF_CALLBACK: DiffUtil.ItemCallback<MediaMetadataRetriever> = object : DiffUtil.ItemCallback<MediaMetadataRetriever>(){
+        private val DIFF_CALLBACK: DiffUtil.ItemCallback<SongItem> = object : DiffUtil.ItemCallback<SongItem>(){
             override fun areItemsTheSame(
-                oldItem: MediaMetadataRetriever,
-                newItem: MediaMetadataRetriever
+                oldItem: SongItem,
+                newItem: SongItem
             ): Boolean {
-                return oldItem!=newItem
+                return oldItem.getTitle()!=newItem.getTitle()
             }
 
             override fun areContentsTheSame(
-                oldItem: MediaMetadataRetriever,
-                newItem: MediaMetadataRetriever
+                oldItem: SongItem,
+                newItem: SongItem
             ): Boolean {
-                return oldItem!=newItem
+                return oldItem.getTitle()!=newItem.getTitle()
             }
         }
     }
@@ -45,7 +46,8 @@ class MusicListAdapter : ListAdapter<MediaMetadataRetriever, MusicListAdapter.Mu
         init {
             ExoPlayerController.getObservableSongId().observeForever{
                 if (position!=it){
-                    if(itemView.song_cover.coverStateWithRing){
+                    if(itemView.song_cover.coverStateWithRing && ExoPlayerController.getLastSong()==position){
+
                         Log.d("Adapter", "stop"+position.toString())
                         itemView.song_cover.stopRing()
                     }
@@ -71,19 +73,10 @@ class MusicListAdapter : ListAdapter<MediaMetadataRetriever, MusicListAdapter.Mu
     }
 
     override fun onBindViewHolder(holder: MusicViewHolder, position: Int) {
-        var metadataRetriever = getItem(position)
-        holder.itemView.song_title.text = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
-        holder.itemView.song_artist.text = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
-        if (holder.itemView.song_title.text.isEmpty() && holder.itemView.song_artist.text.isEmpty()){
-            holder.itemView.song_title.text = Util.getNameByUri(Repository.getData().value!![position])
-        }
-        if (metadataRetriever.embeddedPicture!=null){
-            holder.itemView.song_cover.setImageBitmap(BitmapFactory.decodeByteArray(metadataRetriever.embeddedPicture, 0, metadataRetriever.embeddedPicture.size))
-        }
-        else{
-            holder.itemView.song_cover.setImageDrawable(holder.itemView.context.getDrawable(R.drawable.disc_pic))
-        }
-
+        var item = getItem(position)
+        holder.itemView.song_title.text = item.getTitle()
+        holder.itemView.song_artist.text = item.getAuthor()
+        holder.itemView.song_cover.setImageBitmap(item.getCover())
         (holder.itemView.song_cover as CustomCoverImageView).ringRadius = if (position==ExoPlayerController.getCurrentPlayingSong()) 30 else 0
         holder.itemView.setOnClickListener {
             var intent = Intent(

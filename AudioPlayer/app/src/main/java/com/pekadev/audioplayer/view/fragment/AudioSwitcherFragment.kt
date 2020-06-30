@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.pekadev.audioplayer.R
 import com.pekadev.audioplayer.Util
+import com.pekadev.audioplayer.model.SongItem
 import com.pekadev.audioplayer.view.player.ExoPlayerController
 import kotlinx.android.synthetic.main.song_controller_layout.*
 
@@ -48,23 +49,13 @@ class AudioSwitcherFragment : Fragment(){
     }
 
 
-    fun setData(uri: Uri){
+    fun setData(songItem: SongItem){
         showFragment()
-        val metadata = ExoPlayerController.getMetadata()
-        var bitmap: Bitmap?
-        bitmap = if (metadata.embeddedPicture!=null){
-            BitmapFactory.decodeByteArray(metadata.embeddedPicture, 0,metadata.embeddedPicture.size)
-        } else{
-            BitmapFactory.decodeResource(context!!.resources, R.drawable.disc_pic)
-        }
-        controller_song_cover.setImageBitmap(bitmap)
-        controller_title_text.text = metadata.extractMetadata(
-            MediaMetadataRetriever.METADATA_KEY_TITLE)
-        controller_artist_text.text = metadata.extractMetadata(
-            MediaMetadataRetriever.METADATA_KEY_ARTIST)
-        if (controller_title_text.text.isEmpty() && controller_artist_text.text.isEmpty()){
-            controller_title_text.text = Util.getNameByUri(uri)
-        }
+
+        controller_song_cover.setImageBitmap(songItem.getCover())
+        controller_title_text.text = songItem.getTitle()
+        controller_artist_text.text = songItem.getAuthor()
+
     }
 
     fun hideFragment(){

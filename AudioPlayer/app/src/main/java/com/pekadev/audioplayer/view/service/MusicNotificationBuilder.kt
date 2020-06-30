@@ -11,6 +11,7 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.pekadev.audioplayer.R
 import com.pekadev.audioplayer.Util
+import com.pekadev.audioplayer.model.SongItem
 import com.pekadev.audioplayer.view.application.MyApplication
 import com.pekadev.audioplayer.view.activity.MainActivity
 import com.pekadev.audioplayer.view.player.ExoPlayerController
@@ -19,24 +20,8 @@ class MusicNotificationBuilder{
     lateinit var notificationBuilder: NotificationCompat.Builder
     var context = MyApplication.getApplicationContext()
 
-    fun createNotification(uri: Uri, packageName: String): Notification {
+    fun createNotification(songItem: SongItem, packageName: String): Notification {
         val metadata = ExoPlayerController.getMetadata()
-
-        var bitmap: Bitmap?
-        bitmap = if (metadata.embeddedPicture!=null){
-            BitmapFactory.decodeByteArray(metadata.embeddedPicture, 0,metadata.embeddedPicture.size)
-        } else{
-            BitmapFactory.decodeResource(context.resources, R.drawable.disc_pic)
-        }
-
-        var title = metadata.extractMetadata(
-            MediaMetadataRetriever.METADATA_KEY_TITLE)
-        var artist = metadata.extractMetadata(
-            MediaMetadataRetriever.METADATA_KEY_ARTIST)
-        if (artist==null || title==null){
-            title = Util.getNameByUri(uri)
-            artist = ""
-        }
 
         val notificationIntent = Intent(context, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
@@ -45,8 +30,8 @@ class MusicNotificationBuilder{
         )
         notificationBuilder =  NotificationCompat.Builder(context, MyApplication.CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_play_arrow_black_24dp)
-            .setCustomBigContentView(createExpandedNotificationRemoteView(title, artist, bitmap, packageName))
-            .setCustomContentView(createSmallNotificationRemoteView(title, artist, bitmap, packageName))
+            .setCustomBigContentView(createExpandedNotificationRemoteView(songItem.getTitle(), songItem.getAuthor(), songItem.getCover(), packageName))
+            .setCustomContentView(createSmallNotificationRemoteView(songItem.getTitle(), songItem.getAuthor(), songItem.getCover(), packageName))
             .setContentIntent(pendingIntent)
             .setStyle(androidx.media.app.NotificationCompat.DecoratedMediaCustomViewStyle())
         return notificationBuilder.build()
