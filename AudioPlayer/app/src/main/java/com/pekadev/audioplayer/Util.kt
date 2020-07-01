@@ -8,7 +8,7 @@ import com.pekadev.audioplayer.view.application.MyApplication
 
 object Util {
     fun getNameByUri(uri: Uri): String{
-        val c: Cursor = MyApplication.getApplicationContext().getContentResolver().query(uri, null, null, null, null)!!
+        val c: Cursor = MyApplication.getApplicationContext().contentResolver.query(uri, null, null, null, null)!!
         c.moveToFirst()
         return c.getString(c.getColumnIndex(OpenableColumns.DISPLAY_NAME))
     }

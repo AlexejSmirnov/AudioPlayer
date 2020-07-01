@@ -18,7 +18,7 @@ class MyApplication : Application(){
             CONTEXT
         const val CHANNEL_ID = "SoundNotificationChannel"
     }
-
+    //Channel for music control notification
     fun createNotificationChannel(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             var soundChannel = NotificationChannel(

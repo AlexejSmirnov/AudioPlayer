@@ -28,20 +28,20 @@ class CustomCoverImageView(context: Context, attributeSet: AttributeSet): androi
         }
 
     }
-
+    //Start animation
     fun startRing(){
         if (coverStateWithRing){return}
         coverStateWithRing = true
         startAnimationCounter(0, 30, 300, this)
     }
-
+    //Reverse animation
     fun stopRing(){
         if (!coverStateWithRing){return}
         coverStateWithRing = false
         startAnimationCounter(30, 0, 300, this)
 
     }
-
+    //Set view to default state
     fun rushStopRing(){
         if (!coverStateWithRing){return}
         coverStateWithRing = false

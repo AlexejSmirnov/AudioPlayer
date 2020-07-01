@@ -19,10 +19,12 @@ import com.pekadev.audioplayer.repositoty.Repository
 import com.pekadev.audioplayer.view.customview.CustomCoverImageView
 import com.pekadev.audioplayer.view.application.MyApplication
 import com.pekadev.audioplayer.view.player.ExoPlayerController
+import com.pekadev.audioplayer.view.player.PlayerControllerGranter
 import com.pekadev.audioplayer.view.service.BackgroundSongPlayerService
 import kotlinx.android.synthetic.main.music_item.view.*
 
 class MusicListAdapter : ListAdapter<SongItem, MusicListAdapter.MusicViewHolder>(DIFF_CALLBACK){
+    var songController = PlayerControllerGranter.getController()
     companion object{
         private val DIFF_CALLBACK: DiffUtil.ItemCallback<SongItem> = object : DiffUtil.ItemCallback<SongItem>(){
             override fun areItemsTheSame(
@@ -41,14 +43,15 @@ class MusicListAdapter : ListAdapter<SongItem, MusicListAdapter.MusicViewHolder>
         }
     }
 
-
+    //Responsible for animation of cover's view
     class MusicViewHolder(view: View) : RecyclerView.ViewHolder(view){
         lateinit var item: SongItem
+        var songController = PlayerControllerGranter.getController()
         init {
-            ExoPlayerController.getObservableSongId().observeForever{
+            songController.getObservableSongId().observeForever{
                 if (item!=it){
                     if(itemView.song_cover.coverStateWithRing){
-                        if (ExoPlayerController.getLastSong()==item){
+                        if (songController.getLastSong()==item){
                             Log.d("Adapter", "stopForeground"+position.toString())
                             itemView.song_cover.stopRing()
                         }
@@ -60,7 +63,7 @@ class MusicListAdapter : ListAdapter<SongItem, MusicListAdapter.MusicViewHolder>
                     }
                 }
                 else{
-                    if(itemView.song_cover.coverStateWithRing && ExoPlayerController.getSong()!=null){
+                    if(itemView.song_cover.coverStateWithRing && songController.getSong()!=null){
                         Log.d("Adapter", "pause"+position.toString())
                         itemView.song_cover.stopRing()
                     }
@@ -84,7 +87,7 @@ class MusicListAdapter : ListAdapter<SongItem, MusicListAdapter.MusicViewHolder>
         holder.itemView.song_title.text = holder.item.getTitle()
         holder.itemView.song_artist.text = holder.item.getAuthor()
         holder.itemView.song_cover.setImageBitmap(holder.item.getCover())
-        (holder.itemView.song_cover as CustomCoverImageView).ringRadius = if (holder.item == ExoPlayerController.getSong()) 30 else 0
+        (holder.itemView.song_cover as CustomCoverImageView).ringRadius = if (holder.item == songController.getSong()) 30 else 0
         holder.itemView.setOnClickListener {
             var intent = Intent(
                 MyApplication.getApplicationContext(),
@@ -97,10 +100,10 @@ class MusicListAdapter : ListAdapter<SongItem, MusicListAdapter.MusicViewHolder>
         }
     }
 
-
     private var lastClickedView: View? = null
     private var lastPausedView: View? = null
 
+    //action in the intent that is sent to the service
     fun setIntentAction(intent: Intent, view: View){
         if (lastClickedView!=null){
             if (view != lastClickedView){

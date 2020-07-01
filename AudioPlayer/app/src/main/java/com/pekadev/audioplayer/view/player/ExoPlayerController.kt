@@ -3,6 +3,7 @@ package com.pekadev.audioplayer.view.player
 
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.*
@@ -15,25 +16,25 @@ import com.google.android.exoplayer2.util.Util
 import com.pekadev.audioplayer.R
 import com.pekadev.audioplayer.model.SongItem
 import com.pekadev.audioplayer.repositoty.Repository
+import com.pekadev.audioplayer.view.adapter.MusicListAdapter
 import com.pekadev.audioplayer.view.application.MyApplication
 import com.pekadev.audioplayer.view.fragment.AudioSwitcherFragment
 import com.pekadev.audioplayer.view.service.BackgroundSongPlayerService
+import kotlinx.coroutines.*
 
-object ExoPlayerController : PlayerController{
+class ExoPlayerController : PlayerController{
     //Controllers
-    lateinit var  listAdapter: RecyclerView
     lateinit var service: BackgroundSongPlayerService
-    lateinit var controllerFragment: AudioSwitcherFragment
 
     //Data
     var context = MyApplication.getApplicationContext()
     var player: SimpleExoPlayer
-    val soundList = Repository.getData()
 
     //Player variables
     private var song = MutableLiveData<SongItem?>()
     private var lastSong: SongItem? = null
     private var lastPausedSong: SongItem? = null
+    private var position = MutableLiveData<Float>()
 
     init {
         val audioAttributes =
@@ -54,12 +55,14 @@ object ExoPlayerController : PlayerController{
         this.service = service
     }
 
+
     override fun start(songItem: SongItem) {
         setSong(songItem)
         val mediaSource = buildMediaSource(songItem.getUri())
         player.prepare(mediaSource)
         player.playWhenReady = true
         service.songChanged(songItem)
+        changePositions(getSong())
     }
 
     override fun pause() {
@@ -78,6 +81,7 @@ object ExoPlayerController : PlayerController{
         setSong(lastPausedSong)
         service.setNotificationResumed()
         lastPausedSong = null
+        changePositions(getSong())
     }
 
     override fun next(){
@@ -108,9 +112,7 @@ object ExoPlayerController : PlayerController{
         ).createMediaSource(uri)
     }
 
-
-
-     fun getSong(): SongItem?{
+     override fun getSong(): SongItem?{
         return song.value
     }
 
@@ -119,9 +121,29 @@ object ExoPlayerController : PlayerController{
         song.value = songItem
     }
 
-    fun getObservableSongId():MutableLiveData<SongItem?>{
+    override fun getObservableSongId():MutableLiveData<SongItem?>{
         return song
     }
 
-    fun getLastSong() = lastSong
+    override fun getLastSong() = lastSong
+
+    override fun changePositions(songItem: SongItem?){
+        GlobalScope.launch {
+            while (song.value==songItem) {
+                withContext(Dispatchers.Main){
+                    position.value =((player.currentPosition.toFloat()/player.duration))
+                }
+                delay(1000)
+            }
+        }
+    }
+
+    override fun setPosition(percents: Float){
+        if(percents>1){
+            return
+        }
+        player.seekTo((player.duration*percents).toLong())
+    }
+
+    override fun getPosition() = position
 }

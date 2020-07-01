@@ -8,11 +8,12 @@ import com.pekadev.audioplayer.model.SongItem
 import com.pekadev.audioplayer.repositoty.Repository
 import com.pekadev.audioplayer.view.player.PlayerController
 import com.pekadev.audioplayer.view.player.ExoPlayerController
+import com.pekadev.audioplayer.view.player.PlayerControllerGranter
 
 
 class BackgroundSongPlayerService : Service(){
     var mediaPlayer: PlayerController =
-        ExoPlayerController
+        PlayerControllerGranter.getController()
     var notificationBuilder = MusicNotificationBuilder()
     init {
         mediaPlayer.bindService(this)

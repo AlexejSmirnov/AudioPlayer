@@ -1,5 +1,6 @@
 package com.pekadev.audioplayer.view.fragment
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
@@ -12,11 +13,13 @@ import androidx.fragment.app.Fragment
 import com.pekadev.audioplayer.R
 import com.pekadev.audioplayer.Util
 import com.pekadev.audioplayer.model.SongItem
+import com.pekadev.audioplayer.view.activity.AudioPageActivity
 import com.pekadev.audioplayer.view.player.ExoPlayerController
+import com.pekadev.audioplayer.view.player.PlayerControllerGranter
 import kotlinx.android.synthetic.main.song_controller_layout.*
 
 class AudioSwitcherFragment : Fragment(){
-
+    var songController = PlayerControllerGranter.getController()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -27,8 +30,7 @@ class AudioSwitcherFragment : Fragment(){
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        ExoPlayerController.controllerFragment = this
-        ExoPlayerController.getObservableSongId().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        songController.getObservableSongId().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it == null){
                 hideFragment()
             }
@@ -38,20 +40,19 @@ class AudioSwitcherFragment : Fragment(){
         })
 
         controller_next.setOnClickListener{
-            ExoPlayerController.next()
+            songController.next()
         }
         controller_previous.setOnClickListener{
-            ExoPlayerController.previous()
+            songController.previous()
         }
         controller_play.setOnClickListener{
-            ExoPlayerController.pause()
+            songController.pause()
         }
     }
 
 
     fun setData(songItem: SongItem){
         showFragment()
-
         controller_song_cover.setImageBitmap(songItem.getCover())
         controller_title_text.text = songItem.getTitle()
         controller_artist_text.text = songItem.getAuthor()
@@ -65,4 +66,6 @@ class AudioSwitcherFragment : Fragment(){
     fun showFragment(){
         this.view!!.visibility = View.VISIBLE
     }
+
+
 }

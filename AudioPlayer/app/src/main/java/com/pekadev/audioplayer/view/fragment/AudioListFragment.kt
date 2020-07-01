@@ -49,18 +49,23 @@ class AudioListFragment : Fragment(){
         setupRecycler()
         loadMusicList()
         recyclerView.invalidate()
-        ExoPlayerController.listAdapter = recyclerView
     }
 
+    //Request viewModel to ask Repository to load all songs from external storage to room database
     fun loadMusicList(){
         if(!canAccessExternalSd()){
             requestPermission()
-            return
         }
-        viewModel.updateData()
+        GlobalScope.launch {
+            while (!canAccessExternalSd()){
+            }
+            withContext(Dispatchers.Main){
+                viewModel.updateData()
+            }
+        }
 
     }
-
+    //Recycler configs
     fun setupRecycler(){
         recyclerView.layoutManager = LinearLayoutManager(this.context)
         recyclerView.adapter = adapter
@@ -77,6 +82,8 @@ class AudioListFragment : Fragment(){
             EXTERNAL_REQUEST
         )
     }
+
+    //Check for external permissions
     fun canAccessExternalSd(): Boolean {
         return hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) && hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     }
@@ -84,6 +91,7 @@ class AudioListFragment : Fragment(){
     private fun hasPermission(perm: String): Boolean {
         return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(context!!, perm)
     }
+
 
 
 
