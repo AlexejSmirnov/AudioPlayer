@@ -21,8 +21,6 @@ class MusicNotificationBuilder{
     var context = MyApplication.getApplicationContext()
 
     fun createNotification(songItem: SongItem, packageName: String): Notification {
-        val metadata = ExoPlayerController.getMetadata()
-
         val notificationIntent = Intent(context, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
             context,

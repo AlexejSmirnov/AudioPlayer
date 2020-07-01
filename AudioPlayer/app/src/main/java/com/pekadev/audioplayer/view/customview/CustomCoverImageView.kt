@@ -42,6 +42,12 @@ class CustomCoverImageView(context: Context, attributeSet: AttributeSet): androi
 
     }
 
+    fun rushStopRing(){
+        if (!coverStateWithRing){return}
+        coverStateWithRing = false
+        ringRadius = 0
+    }
+
     private var ringPaint: Paint = Paint()
     init {
         ringPaint.color = Color.WHITE

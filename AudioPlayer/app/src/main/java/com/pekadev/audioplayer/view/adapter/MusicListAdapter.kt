@@ -43,17 +43,24 @@ class MusicListAdapter : ListAdapter<SongItem, MusicListAdapter.MusicViewHolder>
 
 
     class MusicViewHolder(view: View) : RecyclerView.ViewHolder(view){
+        lateinit var item: SongItem
         init {
             ExoPlayerController.getObservableSongId().observeForever{
-                if (position!=it){
-                    if(itemView.song_cover.coverStateWithRing && ExoPlayerController.getLastSong()==position){
+                if (item!=it){
+                    if(itemView.song_cover.coverStateWithRing){
+                        if (ExoPlayerController.getLastSong()==item){
+                            Log.d("Adapter", "stopForeground"+position.toString())
+                            itemView.song_cover.stopRing()
+                        }
+                        else{
+                            Log.d("Adapter", "stopBackground"+position.toString())
+                            itemView.song_cover.rushStopRing()
+                        }
 
-                        Log.d("Adapter", "stop"+position.toString())
-                        itemView.song_cover.stopRing()
                     }
                 }
                 else{
-                    if(itemView.song_cover.coverStateWithRing && it==-1){
+                    if(itemView.song_cover.coverStateWithRing && ExoPlayerController.getSong()!=null){
                         Log.d("Adapter", "pause"+position.toString())
                         itemView.song_cover.stopRing()
                     }
@@ -73,17 +80,17 @@ class MusicListAdapter : ListAdapter<SongItem, MusicListAdapter.MusicViewHolder>
     }
 
     override fun onBindViewHolder(holder: MusicViewHolder, position: Int) {
-        var item = getItem(position)
-        holder.itemView.song_title.text = item.getTitle()
-        holder.itemView.song_artist.text = item.getAuthor()
-        holder.itemView.song_cover.setImageBitmap(item.getCover())
-        (holder.itemView.song_cover as CustomCoverImageView).ringRadius = if (position==ExoPlayerController.getCurrentPlayingSong()) 30 else 0
+        holder.item = getItem(position)
+        holder.itemView.song_title.text = holder.item.getTitle()
+        holder.itemView.song_artist.text = holder.item.getAuthor()
+        holder.itemView.song_cover.setImageBitmap(holder.item.getCover())
+        (holder.itemView.song_cover as CustomCoverImageView).ringRadius = if (holder.item == ExoPlayerController.getSong()) 30 else 0
         holder.itemView.setOnClickListener {
             var intent = Intent(
                 MyApplication.getApplicationContext(),
                 BackgroundSongPlayerService::class.java
             )
-            intent.putExtra("SongUri", position)
+            intent.putExtra("SongUri", holder.item.getUri().toString())
             setIntentAction(intent, it)
             ContextCompat.startForegroundService(MyApplication.getApplicationContext(), intent)
 

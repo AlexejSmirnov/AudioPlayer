@@ -20,6 +20,13 @@ class SongItem {
     fun getAuthor() = author!!
     fun getCover() = cover
     fun getUri() = uri
+    override fun equals(other: Any?): Boolean {
+        if (other !is SongItem) {
+            return false
+        }
+        return uri == other.getUri()
+    }
+
     companion object{
         fun createSongItem(uri: Uri):SongItem?{
             var metadataRetriever = MediaMetadataRetriever()

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.IBinder
 import com.pekadev.audioplayer.model.SongItem
+import com.pekadev.audioplayer.repositoty.Repository
 import com.pekadev.audioplayer.view.player.PlayerController
 import com.pekadev.audioplayer.view.player.ExoPlayerController
 
@@ -25,7 +26,7 @@ class BackgroundSongPlayerService : Service(){
 
     private fun handleIntent(intent: Intent?) {
         when(intent?.action){
-            "start"->start(intent!!.getIntExtra("SongUri", -1))
+            "start"->start(intent!!.getStringExtra("SongUri"))
             "pause" -> pauseOrResume()
             "next"->  mediaPlayer.next()
             "previous"->mediaPlayer.previous()
@@ -42,8 +43,8 @@ class BackgroundSongPlayerService : Service(){
         startForeground(notificationId, notificationBuilder.createNotification(songItem, applicationContext.packageName))
     }
 
-    private fun start(index: Int?){
-        mediaPlayer.start(index)
+    private fun start(songItem: String){
+        mediaPlayer.start(Repository.getSongByUri(songItem)!!)
     }
 
     private fun pauseOrResume(){

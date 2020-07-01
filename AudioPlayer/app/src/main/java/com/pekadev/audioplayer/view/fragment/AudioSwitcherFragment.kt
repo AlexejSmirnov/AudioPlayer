@@ -28,12 +28,12 @@ class AudioSwitcherFragment : Fragment(){
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         ExoPlayerController.controllerFragment = this
-        ExoPlayerController.songIndex.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if (it == -1){
+        ExoPlayerController.getObservableSongId().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if (it == null){
                 hideFragment()
             }
             else{
-                setData(ExoPlayerController.soundList.value!![it])
+                setData(it)
             }
         })
 

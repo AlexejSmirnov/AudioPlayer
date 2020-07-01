@@ -20,17 +20,21 @@ import com.pekadev.audioplayer.view.fragment.AudioSwitcherFragment
 import com.pekadev.audioplayer.view.service.BackgroundSongPlayerService
 
 object ExoPlayerController : PlayerController{
+    //Controllers
     lateinit var  listAdapter: RecyclerView
     lateinit var service: BackgroundSongPlayerService
     lateinit var controllerFragment: AudioSwitcherFragment
-    private lateinit var songItem: SongItem
 
+    //Data
     var context = MyApplication.getApplicationContext()
-    var songIndex = MutableLiveData<Int>()
     var player: SimpleExoPlayer
     val soundList = Repository.getData()
-    private var lastPausedInt = -1
-    private var lastSong = -1
+
+    //Player variables
+    private var song = MutableLiveData<SongItem?>()
+    private var lastSong: SongItem? = null
+    private var lastPausedSong: SongItem? = null
+
     init {
         val audioAttributes =
             AudioAttributes.Builder()
@@ -50,22 +54,19 @@ object ExoPlayerController : PlayerController{
         this.service = service
     }
 
-    override fun start(index: Int?) {
-        if (index!=null){
-            setSongId(index)
-        }
-        if (getSongId() ==-1){return}
-        val mediaSource = buildMediaSource(soundList.value!![getSongId()].getUri())
+    override fun start(songItem: SongItem) {
+        setSong(songItem)
+        val mediaSource = buildMediaSource(songItem.getUri())
         player.prepare(mediaSource)
         player.playWhenReady = true
-        service.songChanged(soundList.value!![getSongId()])
+        service.songChanged(songItem)
     }
 
     override fun pause() {
         player?.playWhenReady = false
         service.setNotificationPaused()
-        lastPausedInt = getSongId()
-        setSongId(-1)
+        lastPausedSong = getSong()
+        setSong(null)
     }
 
     override fun stop() {
@@ -74,29 +75,23 @@ object ExoPlayerController : PlayerController{
 
     override fun resume() {
         player.playWhenReady = true
-        setSongId(lastPausedInt)
+        setSong(lastPausedSong)
         service.setNotificationResumed()
-        lastPausedInt = -1
+        lastPausedSong = null
     }
 
     override fun next(){
-        setSongId(getSongId()+1)
-        if (getSongId() == soundList.value?.size){
-            setSongId(0)
-        }
+        setSong(Repository.getNextSong(getSong()!!))
         stop()
         start(
-            getSongId()
+            getSong()!!
         )
     }
     override fun previous(){
-        setSongId(getSongId()-1)
-        if (getSongId() <0){
-            setSongId(soundList.value?.lastIndex ?: 0)
-        }
+        setSong(Repository.getPreviousSong(getSong()!!))
         stop()
         start(
-            getSongId()
+            getSong()!!
         )
     }
 
@@ -112,31 +107,21 @@ object ExoPlayerController : PlayerController{
             )
         ).createMediaSource(uri)
     }
-    fun getCurrentPlayingSong():Int{
-        if(player.isPlaying){
-            return songIndex.value!!
-        }
-        return -1
+
+
+
+     fun getSong(): SongItem?{
+        return song.value
     }
 
-    private fun getSongId(): Int{
-        return songIndex.value ?: -1
+    private fun setSong(songItem: SongItem?){
+        lastSong = getSong()
+        song.value = songItem
     }
 
-    private fun setSongId(value: Int){
-        lastSong = getSongId()
-        if (value>=0){
-            setMetadata(value)
-        }
-        songIndex.value = value
+    fun getObservableSongId():MutableLiveData<SongItem?>{
+        return song
     }
 
-    fun getObservableSongId():MutableLiveData<Int>{
-        return songIndex
-    }
-    private fun setMetadata(id: Int){
-        songItem = soundList.value!![id]
-    }
-    fun getMetadata() = songItem
     fun getLastSong() = lastSong
 }
