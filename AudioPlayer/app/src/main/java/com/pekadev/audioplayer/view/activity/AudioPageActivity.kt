@@ -22,15 +22,18 @@ class AudioPageActivity : AppCompatActivity(){
         audio_page_pauseplay.setOnClickListener{
             if (playerController.isPlaying()){
                 playerController.pause()
+                audio_page_pauseplay.setImageDrawable(resources.getDrawable(R.drawable.ic_play_arrow_black_24dp))
             }
             else{
                 playerController.resume()
+                audio_page_pauseplay.setImageDrawable(resources.getDrawable(R.drawable.ic_pause_black_24dp))
             }
-        }
+    }
+
         audio_page_next.setOnClickListener{
             playerController.next()
         }
-        playerController.getObservableSongId().observe(this, Observer {
+        playerController.getObservableSong().observe(this, Observer {
             setData(it)
         })
 

@@ -71,11 +71,6 @@ class ExoPlayerController : PlayerController{
         lastPausedSong = getSong()
         setSong(null)
     }
-
-    override fun stop() {
-        player?.playWhenReady = false
-    }
-
     override fun resume() {
         player.playWhenReady = true
         setSong(lastPausedSong)
@@ -86,14 +81,12 @@ class ExoPlayerController : PlayerController{
 
     override fun next(){
         setSong(Repository.getNextSong(getSong()!!))
-        stop()
         start(
             getSong()!!
         )
     }
     override fun previous(){
         setSong(Repository.getPreviousSong(getSong()!!))
-        stop()
         start(
             getSong()!!
         )
@@ -121,7 +114,7 @@ class ExoPlayerController : PlayerController{
         song.value = songItem
     }
 
-    override fun getObservableSongId():MutableLiveData<SongItem?>{
+    override fun getObservableSong():MutableLiveData<SongItem?>{
         return song
     }
 
@@ -139,11 +132,15 @@ class ExoPlayerController : PlayerController{
     }
 
     override fun setPosition(percents: Float){
-        if(percents>1){
+        if(percents>1 || percents<0){
             return
         }
         player.seekTo((player.duration*percents).toLong())
     }
 
     override fun getPosition() = position
+
+    override fun getPausedSong(): SongItem? {
+        return lastPausedSong
+    }
 }

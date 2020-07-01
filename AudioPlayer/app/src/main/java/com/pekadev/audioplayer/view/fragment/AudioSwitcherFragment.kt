@@ -1,20 +1,12 @@
 package com.pekadev.audioplayer.view.fragment
 
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.media.MediaMetadataRetriever
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.pekadev.audioplayer.R
-import com.pekadev.audioplayer.Util
 import com.pekadev.audioplayer.model.SongItem
-import com.pekadev.audioplayer.view.activity.AudioPageActivity
-import com.pekadev.audioplayer.view.player.ExoPlayerController
 import com.pekadev.audioplayer.view.player.PlayerControllerGranter
 import kotlinx.android.synthetic.main.song_controller_layout.*
 
@@ -30,7 +22,7 @@ class AudioSwitcherFragment : Fragment(){
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        songController.getObservableSongId().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        songController.getObservableSong().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it == null){
                 hideFragment()
             }

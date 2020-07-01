@@ -10,13 +10,14 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 object Repository {
-    private val musicPaths = MutableLiveData<ArrayList<SongItem>>()
-    private val sortedMusicPaths = musicPaths
+    private var musicPaths = ArrayList<SongItem>()
+    private val sortedMusicPaths = MutableLiveData<ArrayList<SongItem>>()
     private val database = UriDatabase.getDatabase()
     init {
         loadData()
 
     }
+
     fun loadData() {
         GlobalScope.launch {
             val data = database.uriDao().selectAllUri()
@@ -27,11 +28,12 @@ object Repository {
                     list.add(song)
                 }
                 if ((i+1)%50==0){
-                    musicPaths.postValue(list)
+                    musicPaths = (list)
+                    sortedMusicPaths.postValue(list)
                 }
             }
-            musicPaths.postValue(list)
-
+            musicPaths = (list)
+            sortedMusicPaths.postValue(list)
         }
 
     }
@@ -59,7 +61,7 @@ object Repository {
             }
         }
         else{
-            var fullList = musicPaths.value!!
+            var fullList = musicPaths
             index = fullList.indexOf(songItem)
             return if (index==fullList.lastIndex){
                 fullList[0]
@@ -80,7 +82,7 @@ object Repository {
             }
         }
         else{
-            var fullList = musicPaths.value!!
+            var fullList = musicPaths
             index = fullList.indexOf(songItem)
             return if (index==0){
                 fullList[sortedList.lastIndex]
@@ -92,10 +94,21 @@ object Repository {
 
     fun getSongByUri(uri: String):SongItem?{
         val realUri = Uri.parse(uri)
-        for (i in musicPaths.value!!){
+        for (i in musicPaths){
             if (i.getUri()==realUri)
                 return i
         }
         return null
+    }
+
+    fun setFilteredList(text: String){
+        var sortedList = ArrayList<SongItem>()
+        for (i in musicPaths){
+            if (i.getTitle().toLowerCase().contains(text.toLowerCase())
+                || i.getAuthor().toLowerCase().contains(text.toLowerCase())){
+                sortedList.add(i)
+            }
+        }
+        sortedMusicPaths.value = sortedList
     }
 }

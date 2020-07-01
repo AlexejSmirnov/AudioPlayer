@@ -61,7 +61,7 @@ class BackgroundSongPlayerService : Service(){
 
 
     private fun stopForeground() {
-        mediaPlayer.stop()
+        mediaPlayer.pause()
         stopForeground(true)
     }
 
