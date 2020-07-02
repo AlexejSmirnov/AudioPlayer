@@ -2,6 +2,7 @@ package com.pekadev.audioplayer.view.activity
 
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -13,10 +14,15 @@ import kotlinx.android.synthetic.main.audio_page_layout.*
 
 class AudioPageActivity : AppCompatActivity(){
     var playerController = PlayerControllerGranter.getController()
+    lateinit var onSwipeTouchListener: OnSwipeTouchListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.audio_page_layout)
-
+        val gestureListener = GestureListener()
+        gestureListener.setOnSwipeBottom { this.finish() }
+        gestureListener.setOnSwipeRight { playerController.previous() }
+        gestureListener.setOnSwipeLeft { playerController.next() }
+        onSwipeTouchListener = OnSwipeTouchListener(this, audio_page_background, gestureListener)
         audio_page_previous.setOnClickListener{
             playerController.previous()
         }
@@ -62,6 +68,8 @@ class AudioPageActivity : AppCompatActivity(){
 
         })
     }
+
+
 
     fun setData(item: SongItem?){
         if (item==null){

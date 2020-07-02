@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/audio_page_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -36,6 +37,7 @@
 
     <SeekBar
         android:id="@+id/audio_page_seekbar"
+        style="@style/MySeekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -45,8 +47,7 @@
         android:min="0"
         app:layout_constraintBottom_toTopOf="@id/audio_page_next"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        style="@style/MySeekBar"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/audio_page_previous"
@@ -85,18 +86,18 @@
         android:id="@+id/audio_page_full_time_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/audio_page_seekbar"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"></TextView>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/audio_page_seekbar"></TextView>
 
     <TextView
         android:id="@+id/audio_page_current_time_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/audio_page_seekbar"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"></TextView>
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/audio_page_seekbar"></TextView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
