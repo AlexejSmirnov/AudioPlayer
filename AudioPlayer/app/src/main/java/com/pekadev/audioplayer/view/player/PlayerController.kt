@@ -19,4 +19,5 @@ interface PlayerController {
     fun changePositions(songItem: SongItem?) //start to change observable position of song
     fun setPosition(percents: Float) //set position of song (from 0 to 1)
     fun getPosition(): MutableLiveData<Float> //get observable position of song
+    fun getLength():Long //song length
 }

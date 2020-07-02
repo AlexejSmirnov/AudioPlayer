@@ -9,4 +9,10 @@
         <item name="android:windowLightStatusBar">true</item>
     </style>
 
+    <style name="MySeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:progressBackgroundTint">#5E5E5E</item>
+        <item name="android:progressTint">#000000</item>
+        <item name="android:thumbTint">#333333</item>
+    </style>
+
 </resources>

@@ -47,23 +47,23 @@ class MusicListAdapter : ListAdapter<SongItem, MusicListAdapter.MusicViewHolder>
                 if (item!=it){
                     if(itemView.song_cover.coverStateWithRing){
                         if (songController.getLastSong()==item){
-                            Log.d("Adapter", "stopForeground"+position.toString())
+                            Log.d("Adapter", "stopForeground "+item?.getTitle())
                             itemView.song_cover.stopRing()
                         }
                         else{
-                            Log.d("Adapter", "stopBackground"+position.toString())
+                            Log.d("Adapter", "stopBackground "+item?.getTitle())
                             itemView.song_cover.rushStopRing()
                         }
 
                     }
                 }
                 else{
-                    if(itemView.song_cover.coverStateWithRing && songController.getSong()!=null){
-                        Log.d("Adapter", "pause"+position.toString())
+                    if(itemView.song_cover.coverStateWithRing && songController.getSong()==null){
+                        Log.d("Adapter", "pause "+item?.getTitle())
                         itemView.song_cover.stopRing()
                     }
                     else{
-                        Log.d("Adapter", "start"+position.toString())
+                        Log.d("Adapter", "start "+item?.getTitle())
                         itemView.song_cover.startRing()
                     }
                 }

@@ -80,13 +80,13 @@ class ExoPlayerController : PlayerController{
     }
 
     override fun next(){
-        setSong(Repository.getNextSong(getSong()!!))
+        setSong(Repository.getNextSong(getSong()?:lastPausedSong?:lastSong!!))
         start(
             getSong()!!
         )
     }
     override fun previous(){
-        setSong(Repository.getPreviousSong(getSong()!!))
+        setSong(Repository.getPreviousSong(getSong()?:lastPausedSong?:lastSong!!))
         start(
             getSong()!!
         )
@@ -126,7 +126,7 @@ class ExoPlayerController : PlayerController{
                 withContext(Dispatchers.Main){
                     position.value =((player.currentPosition.toFloat()/player.duration))
                 }
-                delay(1000)
+                delay(500)
             }
         }
     }
@@ -142,5 +142,9 @@ class ExoPlayerController : PlayerController{
 
     override fun getPausedSong(): SongItem? {
         return lastPausedSong
+    }
+
+    override fun getLength(): Long {
+        return player.duration
     }
 }

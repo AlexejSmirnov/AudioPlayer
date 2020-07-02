@@ -22,7 +22,9 @@ class MainActivity : AppCompatActivity() {
     fun onBackgroundClick(view: View){
         var intent = Intent(this, AudioPageActivity::class.java)
         startActivity(intent)
+        overridePendingTransition(R.anim.slide_up,  R.anim.no_animation)
     }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.main_activity_menu, menu)
