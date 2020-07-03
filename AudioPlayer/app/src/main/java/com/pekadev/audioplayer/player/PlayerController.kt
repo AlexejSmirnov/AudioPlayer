@@ -1,4 +1,4 @@
-package com.pekadev.audioplayer.view.player
+package com.pekadev.audioplayer.player
 
 import androidx.lifecycle.MutableLiveData
 import com.pekadev.audioplayer.model.SongItem

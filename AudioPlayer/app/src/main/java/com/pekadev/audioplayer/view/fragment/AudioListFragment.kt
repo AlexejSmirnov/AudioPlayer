@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.app.Application
 import android.content.pm.PackageManager
-import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,20 +17,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.pekadev.audioplayer.R
 import com.pekadev.audioplayer.view.adapter.MusicListAdapter
 import com.pekadev.audioplayer.view.adapter.MyItemDecoration
-import com.pekadev.audioplayer.view.player.ExoPlayerController
+import com.pekadev.audioplayer.view.listeners.drag.DragGestureListener
+import com.pekadev.audioplayer.view.listeners.drag.OnDragTouchListener
 import com.pekadev.audioplayer.viewmodel.AudioListFragmentViewModel
 import com.pekadev.audioplayer.viewmodel.ViewModelFactory
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.audio_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 
 class AudioListFragment : Fragment(){
     val EXTERNAL_PERMS = arrayOf(
         Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE
     )
+
     val EXTERNAL_REQUEST = 138
     lateinit var viewModel: AudioListFragmentViewModel
     var adapter = MusicListAdapter()
@@ -49,6 +50,7 @@ class AudioListFragment : Fragment(){
         setupRecycler()
         loadMusicList()
         recyclerView.invalidate()
+
     }
 
     //Request viewModel to ask Repository to load all songs from external storage to room database

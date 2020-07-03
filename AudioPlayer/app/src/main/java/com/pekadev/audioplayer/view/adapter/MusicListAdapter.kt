@@ -14,7 +14,7 @@ import com.pekadev.audioplayer.R
 import com.pekadev.audioplayer.model.SongItem
 import com.pekadev.audioplayer.view.customview.CustomCoverImageView
 import com.pekadev.audioplayer.view.application.MyApplication
-import com.pekadev.audioplayer.view.player.PlayerControllerGranter
+import com.pekadev.audioplayer.player.PlayerControllerGranter
 import com.pekadev.audioplayer.view.service.BackgroundSongPlayerService
 import kotlinx.android.synthetic.main.music_item.view.*
 

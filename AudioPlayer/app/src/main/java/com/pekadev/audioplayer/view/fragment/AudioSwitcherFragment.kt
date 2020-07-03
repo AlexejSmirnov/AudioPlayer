@@ -4,10 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import com.pekadev.audioplayer.R
 import com.pekadev.audioplayer.model.SongItem
-import com.pekadev.audioplayer.view.player.PlayerControllerGranter
+import com.pekadev.audioplayer.player.PlayerControllerGranter
+import com.pekadev.audioplayer.view.activity.MainActivity
+import com.pekadev.audioplayer.view.listeners.drag.DragGestureListener
+import com.pekadev.audioplayer.view.listeners.drag.OnDragTouchListener
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.song_controller_layout.*
 
 class AudioSwitcherFragment : Fragment(){
@@ -40,6 +45,14 @@ class AudioSwitcherFragment : Fragment(){
         controller_play.setOnClickListener{
             songController.pause()
         }
+
+
+        var onDragTouchListener =
+            OnDragTouchListener(
+                this.context, view!!,
+                DragGestureListener(view!!),
+                activity as MainActivity
+            )
     }
 
 
@@ -48,7 +61,6 @@ class AudioSwitcherFragment : Fragment(){
         controller_song_cover.setImageBitmap(songItem.getCover())
         controller_title_text.text = songItem.getTitle()
         controller_artist_text.text = songItem.getAuthor()
-
     }
 
     fun hideFragment(){

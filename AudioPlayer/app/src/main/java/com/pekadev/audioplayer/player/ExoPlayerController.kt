@@ -1,11 +1,8 @@
-package com.pekadev.audioplayer.view.player
+package com.pekadev.audioplayer.player
 
 
-import android.media.MediaMetadataRetriever
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -16,9 +13,7 @@ import com.google.android.exoplayer2.util.Util
 import com.pekadev.audioplayer.R
 import com.pekadev.audioplayer.model.SongItem
 import com.pekadev.audioplayer.repositoty.Repository
-import com.pekadev.audioplayer.view.adapter.MusicListAdapter
 import com.pekadev.audioplayer.view.application.MyApplication
-import com.pekadev.audioplayer.view.fragment.AudioSwitcherFragment
 import com.pekadev.audioplayer.view.service.BackgroundSongPlayerService
 import kotlinx.coroutines.*
 

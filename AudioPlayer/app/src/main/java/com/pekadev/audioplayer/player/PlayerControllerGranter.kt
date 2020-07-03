@@ -1,4 +1,4 @@
-package com.pekadev.audioplayer.view.player
+package com.pekadev.audioplayer.player
 
 object PlayerControllerGranter {
     private val controller = ExoPlayerController()

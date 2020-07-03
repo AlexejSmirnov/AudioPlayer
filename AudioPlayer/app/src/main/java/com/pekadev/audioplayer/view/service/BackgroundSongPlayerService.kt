@@ -2,13 +2,11 @@ package com.pekadev.audioplayer.view.service
 
 import android.app.Service
 import android.content.Intent
-import android.net.Uri
 import android.os.IBinder
 import com.pekadev.audioplayer.model.SongItem
 import com.pekadev.audioplayer.repositoty.Repository
-import com.pekadev.audioplayer.view.player.PlayerController
-import com.pekadev.audioplayer.view.player.ExoPlayerController
-import com.pekadev.audioplayer.view.player.PlayerControllerGranter
+import com.pekadev.audioplayer.player.PlayerController
+import com.pekadev.audioplayer.player.PlayerControllerGranter
 
 
 class BackgroundSongPlayerService : Service(){

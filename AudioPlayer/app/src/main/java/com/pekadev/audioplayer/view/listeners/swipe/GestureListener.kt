@@ -1,6 +1,5 @@
-package com.pekadev.audioplayer.view.activity
+package com.pekadev.audioplayer.view.listeners.swipe
 
-import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import kotlin.math.abs

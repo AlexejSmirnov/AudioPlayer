@@ -4,17 +4,12 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.media.MediaMetadataRetriever
-import android.net.Uri
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.pekadev.audioplayer.R
-import com.pekadev.audioplayer.Util
 import com.pekadev.audioplayer.model.SongItem
 import com.pekadev.audioplayer.view.application.MyApplication
 import com.pekadev.audioplayer.view.activity.MainActivity
-import com.pekadev.audioplayer.view.player.ExoPlayerController
 
 class MusicNotificationBuilder{
     lateinit var notificationBuilder: NotificationCompat.Builder
