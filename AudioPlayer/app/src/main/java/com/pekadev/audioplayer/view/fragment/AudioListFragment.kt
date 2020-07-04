@@ -17,11 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.pekadev.audioplayer.R
 import com.pekadev.audioplayer.view.adapter.MusicListAdapter
 import com.pekadev.audioplayer.view.adapter.MyItemDecoration
-import com.pekadev.audioplayer.view.listeners.drag.DragGestureListener
-import com.pekadev.audioplayer.view.listeners.drag.OnDragTouchListener
 import com.pekadev.audioplayer.viewmodel.AudioListFragmentViewModel
 import com.pekadev.audioplayer.viewmodel.ViewModelFactory
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.audio_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

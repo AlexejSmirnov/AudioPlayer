@@ -1,27 +1,23 @@
-package com.pekadev.audioplayer.view.listeners.drag
+package com.pekadev.audioplayer.view.fragment.switcherfragment.drag
 
-import android.graphics.drawable.Drawable
+import android.animation.ValueAnimator
 import android.util.Log
-import android.view.GestureDetector
-import android.view.MotionEvent
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.marginTop
+import androidx.core.animation.doOnEnd
+import androidx.core.view.doOnLayout
 import com.pekadev.audioplayer.R
 
-
-class DragGestureListener(val view: View) : GestureDetector.SimpleOnGestureListener(){
-    //Calculating params
-    private var dX = -1F
-    private var dY = -1F
+class AudioSwitcherViewChangeMethods(val view: ConstraintLayout) {
     private val triggerHeight = view.resources.displayMetrics.heightPixels/4
     private val defaultViewImageSize = view.resources.getDimensionPixelSize(R.dimen.image_view_default)
     private val screenHeight = view.resources.displayMetrics.heightPixels
+    private var viewHeight = 0
+    private var currentHeight = -1
     //Views
     private val coverImageView = view.findViewById<ImageView>(R.id.controller_song_cover)
     private val titleTextView = view.findViewById<TextView>(R.id.controller_title_text)
@@ -34,63 +30,25 @@ class DragGestureListener(val view: View) : GestureDetector.SimpleOnGestureListe
     private val previousDrawable = previousButton.drawable.constantState!!.newDrawable().mutate()
     private val pauseDrawable = pauseButton.drawable.constantState!!.newDrawable().mutate()
     private val nextDrawable = nextButton.drawable.constantState!!.newDrawable().mutate()
+
     init {
         previousButton.setImageDrawable(previousDrawable)
         pauseButton.setImageDrawable(pauseDrawable)
         nextButton.setImageDrawable(nextDrawable)
-    }
-    override fun onDown(e: MotionEvent?): Boolean {
-        dX = e!!.rawX
-        dY = e!!.rawY
-        return true
-    }
-
-    override fun onFling(
-        e1: MotionEvent?,
-        e2: MotionEvent?,
-        velocityX: Float,
-        velocityY: Float
-    ): Boolean {
-        var result = false
-        try {
-
-        } catch (exception: Exception) {
-            exception.printStackTrace()
+        view.doOnLayout {
+            viewHeight = view.measuredHeight
         }
-        return result
     }
 
-
-
-    override fun onScroll(
-        e1: MotionEvent?,
-        e2: MotionEvent?,
-        distanceX: Float,
-        distanceY: Float
-    ): Boolean {
-        val lParams =
-            view.layoutParams
-
-        lParams.height = lParams.height+e1!!.y.toInt()-e2!!.y.toInt()
-        val delta = lParams.height
-        view.layoutParams = lParams
-        var param = coverImageView.layoutParams
-        if (delta in (triggerHeight + 1) until screenHeight){
-            calculateNewValues(delta)
-        }
-        else if (delta<triggerHeight){
-            setDefaultValues()
-        }
-        coverImageView.layoutParams = param
-        return super.onScroll(e1, e2, distanceX, distanceY)
-    }
 
     fun setDefaultValues(){
-
         coverImageView.layoutParams.height = defaultViewImageSize
         coverImageView.layoutParams.width = defaultViewImageSize
         setViewsAlpha(1F)
         setCoverImageViewBias(0F)
+        view.doOnLayout {
+            currentHeight = view.measuredHeight
+        }
     }
 
     fun calculateNewValues(delta: Int){
@@ -101,6 +59,9 @@ class DragGestureListener(val view: View) : GestureDetector.SimpleOnGestureListe
         var bias = (customDelta.toFloat()/1000)
         setCoverImageViewBias(bias)
         setViewsAlpha(1-(customDelta.toFloat()/500))
+        view.doOnLayout {
+            currentHeight = view.measuredHeight
+        }
     }
 
     private fun setViewsAlpha(alpha: Float){
@@ -113,8 +74,45 @@ class DragGestureListener(val view: View) : GestureDetector.SimpleOnGestureListe
 
     private fun setCoverImageViewBias(biasedValue: Float){
         val constraintSet = ConstraintSet()
-        constraintSet.clone(view as ConstraintLayout)
+        constraintSet.clone(view)
         constraintSet.setHorizontalBias(R.id.controller_song_cover, biasedValue)
         constraintSet.applyTo(view)
+    }
+
+    fun forwardAnimation(callback: ()->Unit){
+        val valueAnimator = ValueAnimator.ofInt(currentHeight, screenHeight)
+        valueAnimator.duration = 300L
+        valueAnimator.addUpdateListener {
+            val animatedValue = valueAnimator.animatedValue as Int
+            if (animatedValue>triggerHeight){
+                calculateNewValues(animatedValue)
+            }
+            else{
+                setDefaultValues()
+            }
+            view.layoutParams.height = animatedValue
+        }
+        valueAnimator.doOnEnd {
+            callback()
+        }
+        valueAnimator.start()
+    }
+
+
+    fun backwardAnimation(){
+        val valueAnimator = ValueAnimator.ofInt(viewHeight, view!!.layoutParams.height)
+        valueAnimator.duration = 500L
+        valueAnimator.addUpdateListener {
+            val animatedValue = valueAnimator.animatedValue as Int
+            if (animatedValue>triggerHeight){
+                calculateNewValues(animatedValue)
+            }
+            else{
+                setDefaultValues()
+            }
+            view.layoutParams.height = animatedValue
+        }
+
+        valueAnimator.reverse()
     }
 }

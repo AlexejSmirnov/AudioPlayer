@@ -6,7 +6,9 @@ apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
-
+    dataBinding {
+        enabled = true
+    }
     defaultConfig {
         applicationId "com.pekadev.myplayer"
         minSdkVersion 23

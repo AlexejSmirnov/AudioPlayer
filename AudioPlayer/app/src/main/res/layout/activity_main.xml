@@ -5,7 +5,8 @@
     android:id="@+id/main_constraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.activity.MainActivity">
+    tools:context=".view.activity.MainActivity"
+    >
 
     <fragment
         android:id="@+id/main_activity_list_fragment"
@@ -17,9 +18,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
+        android:clickable="true"
         android:id="@+id/song_controller_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:animateLayoutChanges="true"/>
+        app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

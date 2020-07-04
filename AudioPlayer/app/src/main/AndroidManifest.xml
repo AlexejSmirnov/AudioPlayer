@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.fragment.AudioPageFragment"
+        <activity android:name=".view.fragment.audiopage.AudioPageFragment"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <service android:name="com.pekadev.audioplayer.view.service.BackgroundSongPlayerService" />
     </application>

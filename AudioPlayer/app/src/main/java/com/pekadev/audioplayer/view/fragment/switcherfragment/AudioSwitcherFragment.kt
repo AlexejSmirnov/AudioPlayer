@@ -1,22 +1,31 @@
-package com.pekadev.audioplayer.view.fragment
+package com.pekadev.audioplayer.view.fragment.switcherfragment
 
+import android.animation.ValueAnimator
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.pekadev.audioplayer.R
 import com.pekadev.audioplayer.model.SongItem
 import com.pekadev.audioplayer.player.PlayerControllerGranter
 import com.pekadev.audioplayer.view.activity.MainActivity
-import com.pekadev.audioplayer.view.listeners.drag.DragGestureListener
-import com.pekadev.audioplayer.view.listeners.drag.OnDragTouchListener
-import kotlinx.android.synthetic.main.activity_main.*
+import com.pekadev.audioplayer.view.fragment.switcherfragment.drag.AudioSwitcherViewChangeMethods
+import com.pekadev.audioplayer.view.fragment.switcherfragment.drag.DragGestureListener
+import com.pekadev.audioplayer.view.fragment.switcherfragment.drag.OnDragTouchListener
 import kotlinx.android.synthetic.main.song_controller_layout.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AudioSwitcherFragment : Fragment(){
     var songController = PlayerControllerGranter.getController()
+    private lateinit var audioSwitcherViewChangeMethods: AudioSwitcherViewChangeMethods
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -27,6 +36,7 @@ class AudioSwitcherFragment : Fragment(){
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        audioSwitcherViewChangeMethods = AudioSwitcherViewChangeMethods(view!! as ConstraintLayout)
         songController.getObservableSong().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             if (it == null){
                 hideFragment()
@@ -47,13 +57,16 @@ class AudioSwitcherFragment : Fragment(){
         }
 
 
+
+
         var onDragTouchListener =
             OnDragTouchListener(
                 this.context, view!!,
-                DragGestureListener(view!!),
-                activity as MainActivity
+                DragGestureListener(audioSwitcherViewChangeMethods),
+                this
             )
     }
+
 
 
     fun setData(songItem: SongItem){
@@ -69,6 +82,26 @@ class AudioSwitcherFragment : Fragment(){
 
     fun showFragment(){
         this.view!!.visibility = View.VISIBLE
+    }
+
+    fun startAnimation(){
+        audioSwitcherViewChangeMethods.forwardAnimation((activity as MainActivity)::replaceFragment)
+    }
+
+    fun reverseAnimation(){
+        audioSwitcherViewChangeMethods.backwardAnimation()
+    }
+
+    fun changeFragmentAnimation(){
+        GlobalScope.launch {
+            while(song_controller_background_layout==null){
+            }
+            withContext(Dispatchers.Main){
+                song_controller_background_layout.layoutParams.height = view!!.resources.displayMetrics.heightPixels
+                audioSwitcherViewChangeMethods.backwardAnimation()
+            }
+        }
+        //Log.d("Animation", "method invoked")
     }
 
 

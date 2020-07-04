@@ -1,10 +1,9 @@
-package com.pekadev.audioplayer.view.listeners.swipe
+package com.pekadev.audioplayer.view.fragment.audiopage.swipe
 
 import android.content.Context
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import com.pekadev.audioplayer.view.listeners.swipe.GestureListener
 
 
 class OnSwipeTouchListener(ctx: Context?, mainView: View, gestureListener: GestureListener) : View.OnTouchListener {

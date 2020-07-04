@@ -1,12 +1,10 @@
-package com.pekadev.audioplayer.view.fragment
+package com.pekadev.audioplayer.view.fragment.audiopage
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.pekadev.audioplayer.R
@@ -14,14 +12,13 @@ import com.pekadev.audioplayer.Util.millisToStringTime
 import com.pekadev.audioplayer.model.SongItem
 import com.pekadev.audioplayer.player.PlayerControllerGranter
 import com.pekadev.audioplayer.view.activity.MainActivity
-import com.pekadev.audioplayer.view.listeners.swipe.GestureListener
-import com.pekadev.audioplayer.view.listeners.swipe.OnSwipeTouchListener
+import com.pekadev.audioplayer.view.fragment.audiopage.swipe.GestureListener
+import com.pekadev.audioplayer.view.fragment.audiopage.swipe.OnSwipeTouchListener
 import kotlinx.android.synthetic.main.audio_page_layout.*
 
 class AudioPageFragment : Fragment(){
     var playerController = PlayerControllerGranter.getController()
     lateinit var onSwipeTouchListener: OnSwipeTouchListener
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -33,6 +30,7 @@ class AudioPageFragment : Fragment(){
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         val gestureListener =
             GestureListener()
         gestureListener.setOnSwipeBottom { (activity as MainActivity).replaceFragment() }
@@ -59,14 +57,8 @@ class AudioPageFragment : Fragment(){
             audio_page_author.text = item.getAuthor()
             audio_page_title.text = item.getTitle()
             audio_page_cover_view.setImageBitmap(item.getCover())
-            audio_page_full_time_label.text = millisToStringTime(playerController.getLength())
         }
     }
-
-//    override fun finish() {
-//        super.finish()
-//        overridePendingTransition(R.anim.no_animation, R.anim.slide_down)
-//    }
 
 
     fun setObservers(){
@@ -78,6 +70,7 @@ class AudioPageFragment : Fragment(){
             if (!audio_page_seekbar.isPressed){
                 audio_page_seekbar.progress = (it*1000).toInt()
                 audio_page_current_time_label.text = millisToStringTime((playerController.getLength()*it).toLong())
+                audio_page_full_time_label.text = millisToStringTime(playerController.getLength())
             }
         })
 

@@ -11,6 +11,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.pekadev.audioplayer.R
+import com.pekadev.audioplayer.Util.millisToStringTime
 import com.pekadev.audioplayer.model.SongItem
 import com.pekadev.audioplayer.repositoty.Repository
 import com.pekadev.audioplayer.view.application.MyApplication
@@ -24,7 +25,6 @@ class ExoPlayerController : PlayerController{
     //Data
     var context = MyApplication.getApplicationContext()
     var player: SimpleExoPlayer
-
     //Player variables
     private var song = MutableLiveData<SongItem?>()
     private var lastSong: SongItem? = null
@@ -44,6 +44,14 @@ class ExoPlayerController : PlayerController{
             DefaultLoadControl()
         )
         player.audioAttributes = audioAttributes
+        player.addListener(object :Player.EventListener{
+            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                if (playbackState == ExoPlayer.STATE_ENDED){
+                    next()
+                }
+            }
+
+        })
     }
 
     override fun bindService(service: BackgroundSongPlayerService) {
@@ -52,10 +60,10 @@ class ExoPlayerController : PlayerController{
 
 
     override fun start(songItem: SongItem) {
-        setSong(songItem)
         val mediaSource = buildMediaSource(songItem.getUri())
         player.prepare(mediaSource)
         player.playWhenReady = true
+        setSong(songItem)
         service.songChanged(songItem)
         changePositions(getSong())
     }
@@ -140,6 +148,12 @@ class ExoPlayerController : PlayerController{
     }
 
     override fun getLength(): Long {
-        return player.duration
+        return  if (player.duration>0){
+            player.duration
+        }
+        else{
+            0
+        }
     }
+
 }

@@ -1,4 +1,4 @@
-package com.pekadev.audioplayer.view.listeners.swipe
+package com.pekadev.audioplayer.view.fragment.audiopage.swipe
 
 import android.view.GestureDetector
 import android.view.MotionEvent
