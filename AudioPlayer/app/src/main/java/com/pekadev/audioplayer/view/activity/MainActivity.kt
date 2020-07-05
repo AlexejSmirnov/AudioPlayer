@@ -1,7 +1,9 @@
 package com.pekadev.audioplayer.view.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.Toast
@@ -18,12 +20,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
     private var fragment: Fragment=
         AudioSwitcherFragment()
-    private lateinit var searchView: SearchView
+    private lateinit var searchItem: MenuItem
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         supportFragmentManager.beginTransaction().replace(R.id.song_controller_fragment, fragment).commit()
-        
+        Log.d("info", (Runtime.getRuntime().maxMemory()/8).toString())
     }
 
 
@@ -31,8 +33,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.main_activity_menu, menu)
-        val searchItem = menu?.findItem(R.id.app_bar_search)!!
-        searchView = searchItem!!.actionView as SearchView
+        searchItem = menu?.findItem(R.id.app_bar_search)!!
+        val searchView = searchItem!!.actionView as SearchView
         searchView.setOnQueryTextListener(object :
             SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
@@ -62,13 +64,13 @@ class MainActivity : AppCompatActivity() {
             fragment =
                 AudioPageFragment()
              supportFragmentManager.beginTransaction().replace(R.id.song_controller_fragment, fragment).commit()
-             searchView.visibility = View.GONE
+             searchItem.isVisible = false
         } else{
              song_controller_fragment.layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
              fragment =AudioSwitcherFragment()
              supportFragmentManager.beginTransaction().replace(R.id.song_controller_fragment, fragment).commit()
              (fragment as AudioSwitcherFragment).changeFragmentAnimation()
-             searchView.visibility = View.VISIBLE
+             searchItem.isVisible = true
         }
     }
 

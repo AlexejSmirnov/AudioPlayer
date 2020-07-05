@@ -13,6 +13,6 @@ interface UriDao{
     @Delete
     fun removeUri(uriEntity: UriEntity)
 
-    @Query("Select * from UriEntity")
+    @Query("Select * from UriEntity order by title")
     fun selectAllUri(): List<UriEntity>
 }

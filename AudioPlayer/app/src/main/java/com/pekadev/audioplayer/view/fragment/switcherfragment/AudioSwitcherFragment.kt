@@ -56,9 +56,9 @@ class AudioSwitcherFragment : Fragment(){
             songController.pause()
         }
 
-
-
-
+        view!!.setOnClickListener{
+            Toast.makeText(context, "woah", Toast.LENGTH_LONG).show()
+        }
         var onDragTouchListener =
             OnDragTouchListener(
                 this.context, view!!,

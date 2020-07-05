@@ -1,13 +1,20 @@
 package com.pekadev.audioplayer.repositoty
 
+import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.pekadev.audioplayer.Util
 import com.pekadev.audioplayer.model.FolderScanner
 import com.pekadev.audioplayer.model.SongItem
 import com.pekadev.audioplayer.model.room.UriDatabase
 import com.pekadev.audioplayer.model.room.UriEntity
+import com.pekadev.audioplayer.view.application.MyApplication
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.lang.RuntimeException
 
 object Repository {
     private var musicPaths = ArrayList<SongItem>()
@@ -22,17 +29,18 @@ object Repository {
         GlobalScope.launch {
             val data = database.uriDao().selectAllUri()
             val list = ArrayList<SongItem>()
+            musicPaths = (list)
+            Log.d("datalistsize", data.size.toString())
             for (i in data.indices){
-                val song = SongItem.createSongItem(Uri.parse(data[i].uri))
+                val song = SongItem.createSongItem(data[i])
                 if (song!=null){
                     list.add(song)
                 }
                 if ((i+1)%50==0){
-                    musicPaths = (list)
                     sortedMusicPaths.postValue(list)
+                    Log.d("datalistsize", "lap"+i)
                 }
             }
-            musicPaths = (list)
             sortedMusicPaths.postValue(list)
         }
 
@@ -42,7 +50,30 @@ object Repository {
         GlobalScope.launch {
             val values = FolderScanner.getMediaFileList()
             for (i in values){
-                database.uriDao().insertUri(UriEntity(i.toString()))
+                var metadataRetriever = MediaMetadataRetriever()
+                launch(Dispatchers.IO){
+                    var title: String? = null
+                    var author: String? = null
+                    try{
+                        metadataRetriever.setDataSource(MyApplication.getApplicationContext(), i)
+                        title = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
+                        author  = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
+                    }
+                    catch (e: RuntimeException){
+
+                    }
+                    finally {
+                        if (title==null || author==null){
+                            title = Util.getNameByUri(i)
+                            author = ""
+                        }
+                        database.uriDao().insertUri(
+                            UriEntity(
+                                i.toString(),
+                                title,
+                                author))
+                    }
+                }
             }
             loadData()
         }

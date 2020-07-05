@@ -26,6 +26,7 @@ class OnDragTouchListener(ctx: Context?, mainView: View, private val gestureList
             if (event.rawY > v!!.resources.displayMetrics.heightPixels*0.75){
                 fragment.reverseAnimation()
             }
+
             else{
                 v!!.layoutParams.height = ConstraintLayout.LayoutParams.MATCH_PARENT
                 fragment.startAnimation()

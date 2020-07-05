@@ -12,6 +12,8 @@ class DragGestureListener(private val audioSwitcherViewChangeMethods: AudioSwitc
     private val triggerHeight = view.resources.displayMetrics.heightPixels/4
     private val screenHeight = view.resources.displayMetrics.heightPixels
 
+
+
     override fun onFling(
         e1: MotionEvent?,
         e2: MotionEvent?,
