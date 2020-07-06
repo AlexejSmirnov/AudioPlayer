@@ -25,9 +25,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         supportFragmentManager.beginTransaction().replace(R.id.song_controller_fragment, fragment).commit()
-        Log.d("info", (Runtime.getRuntime().maxMemory()/8).toString())
-    }
 
+    }
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

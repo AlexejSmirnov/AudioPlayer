@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:visibility="gone"
     >
-
     <ImageView
         android:id="@+id/controller_song_cover"
         android:layout_width="40dp"

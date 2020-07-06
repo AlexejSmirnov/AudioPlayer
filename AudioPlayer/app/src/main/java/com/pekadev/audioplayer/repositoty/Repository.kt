@@ -20,17 +20,12 @@ object Repository {
     private var musicPaths = ArrayList<SongItem>()
     private val sortedMusicPaths = MutableLiveData<ArrayList<SongItem>>()
     private val database = UriDatabase.getDatabase()
-    init {
-        loadData()
-
-    }
 
     fun loadData() {
         GlobalScope.launch {
             val data = database.uriDao().selectAllUri()
             val list = ArrayList<SongItem>()
             musicPaths = (list)
-            Log.d("datalistsize", data.size.toString())
             for (i in data.indices){
                 val song = SongItem.createSongItem(data[i])
                 if (song!=null){
@@ -38,7 +33,6 @@ object Repository {
                 }
                 if ((i+1)%50==0){
                     sortedMusicPaths.postValue(list)
-                    Log.d("datalistsize", "lap"+i)
                 }
             }
             sortedMusicPaths.postValue(list)
@@ -73,9 +67,11 @@ object Repository {
                                 title,
                                 author))
                     }
+                    if (i==values[values.lastIndex]){
+                        loadData()
+                    }
                 }
             }
-            loadData()
         }
 
     }

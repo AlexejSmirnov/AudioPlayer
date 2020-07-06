@@ -6,7 +6,7 @@ import com.pekadev.audioplayer.view.service.BackgroundSongPlayerService
 
 interface PlayerController {
     fun bindService(service: BackgroundSongPlayerService)
-    fun start(songItem: SongItem)
+    fun start(songItem: SongItem?)
     fun pause()
     fun resume()
     fun next()
@@ -20,4 +20,6 @@ interface PlayerController {
     fun setPosition(percents: Float) //set position of song (from 0 to 1)
     fun getPosition(): MutableLiveData<Float> //get observable position of song
     fun getLength():Long //song length
+    fun changePlayingType()
+    fun getPlayingType():Int
 }

@@ -46,10 +46,10 @@ class SongItem {
             val songItem = SongItem()
             songItem.title = entity.title
             songItem.author = entity.author
+            songItem.uri = Uri.parse(entity.uri)
             GlobalScope.launch {
                 try {
                     songItem.metadataRetriever = metadataRetriever
-                    songItem.uri = Uri.parse(entity.uri)
                     metadataRetriever.setDataSource(MyApplication.getApplicationContext(), songItem.uri)
                     var bitmap: Bitmap? = BitmapFactory.decodeByteArray(metadataRetriever.embeddedPicture, 0, metadataRetriever.embeddedPicture.size)
                     songItem.bitmap = bitmapStorage.putAndGetKey(entity.uri, bitmap!!)

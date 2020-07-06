@@ -80,6 +80,7 @@ class AudioSwitcherViewChangeMethods(val view: ConstraintLayout) {
     }
 
     fun forwardAnimation(callback: ()->Unit){
+        Log.d("anim", "forward")
         val valueAnimator = ValueAnimator.ofInt(currentHeight, screenHeight)
         valueAnimator.duration = 300L
         valueAnimator.addUpdateListener {
@@ -100,6 +101,7 @@ class AudioSwitcherViewChangeMethods(val view: ConstraintLayout) {
 
 
     fun backwardAnimation(){
+        Log.d("anim", "backward")
         val valueAnimator = ValueAnimator.ofInt(viewHeight, view!!.layoutParams.height)
         valueAnimator.duration = 500L
         valueAnimator.addUpdateListener {

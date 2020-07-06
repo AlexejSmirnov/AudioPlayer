@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.google.android.exoplayer2.ExoPlayer
 import com.pekadev.audioplayer.R
 import com.pekadev.audioplayer.Util.millisToStringTime
 import com.pekadev.audioplayer.model.SongItem
@@ -44,6 +46,7 @@ class AudioPageFragment : Fragment(){
             )
         setObservers()
         setOnClickListeners()
+
     }
 
 
@@ -57,6 +60,16 @@ class AudioPageFragment : Fragment(){
             audio_page_author.text = item.getAuthor()
             audio_page_title.text = item.getTitle()
             audio_page_cover_view.setImageBitmap(item.getCover())
+            setRepeatType()
+        }
+    }
+
+    fun setRepeatType(){
+        if (playerController.getPlayingType()==ExoPlayer.REPEAT_MODE_OFF){
+            playing_type_image_button.setImageDrawable(resources.getDrawable(R.drawable.ic_repeat_black_24dp))
+        }
+        else{
+            playing_type_image_button.setImageDrawable(resources.getDrawable(R.drawable.ic_repeat_one_black_24dp))
         }
     }
 
@@ -110,6 +123,11 @@ class AudioPageFragment : Fragment(){
 
         audio_page_next.setOnClickListener{
             playerController.next()
+        }
+
+        playing_type_image_button.setOnClickListener{
+            playerController.changePlayingType()
+            setRepeatType()
         }
 
     }

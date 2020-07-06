@@ -59,7 +59,11 @@ class ExoPlayerController : PlayerController{
     }
 
 
-    override fun start(songItem: SongItem) {
+    override fun start(songItem: SongItem?) {
+        if (songItem==null){
+            return
+        }
+
         val mediaSource = buildMediaSource(songItem.getUri())
         player.prepare(mediaSource)
         player.playWhenReady = true
@@ -154,6 +158,19 @@ class ExoPlayerController : PlayerController{
         else{
             0
         }
+    }
+
+    override fun changePlayingType() {
+        if (player.repeatMode == ExoPlayer.REPEAT_MODE_OFF){
+            player.repeatMode = ExoPlayer.REPEAT_MODE_ONE
+        }
+        else{
+            player.repeatMode = ExoPlayer.REPEAT_MODE_OFF
+        }
+    }
+
+    override fun getPlayingType(): Int {
+        return player.repeatMode
     }
 
 }
