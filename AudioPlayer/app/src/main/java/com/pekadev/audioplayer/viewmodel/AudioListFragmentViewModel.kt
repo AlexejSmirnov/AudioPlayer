@@ -13,8 +13,5 @@ class AudioListFragmentViewModel(application: Application) : AndroidViewModel(ap
 
     fun getMusicData() = musicData
 
-    fun updateData(){
-        Repository.loadData()
-        Repository.refillDatabase()
-    }
+
 }

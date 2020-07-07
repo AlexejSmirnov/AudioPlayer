@@ -5,8 +5,10 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.pekadev.audioplayer.Util
+import com.pekadev.audioplayer.model.AlbumItem
 import com.pekadev.audioplayer.model.FolderScanner
 import com.pekadev.audioplayer.model.SongItem
+import com.pekadev.audioplayer.model.room.Album
 import com.pekadev.audioplayer.model.room.UriDatabase
 import com.pekadev.audioplayer.model.room.UriEntity
 import com.pekadev.audioplayer.view.application.MyApplication
@@ -19,7 +21,44 @@ import java.lang.RuntimeException
 object Repository {
     private var musicPaths = ArrayList<SongItem>()
     private val sortedMusicPaths = MutableLiveData<ArrayList<SongItem>>()
+    private var albumsList = emptyList<AlbumItem>()
     private val database = UriDatabase.getDatabase()
+    private var album = ""
+    private var author = ""
+    fun setAlbum(album: String){this.album = album}
+    fun setAuthor(author: String){this.author = author}
+
+    fun setFilteredList(title: String = ""){
+        var sortedList = ArrayList<SongItem>()
+        if (author.isEmpty()&& album.isEmpty()) {
+            for (i in musicPaths){
+                if (i.getTitle().toLowerCase().contains(title.toLowerCase())
+                    || i.getAuthor().toLowerCase().contains(title.toLowerCase())){
+                    sortedList.add(i)
+                }
+            }
+        }
+        else{
+            for (i in musicPaths){
+                if (i.getTitle().toLowerCase().contains(title.toLowerCase())
+                    && i.getAuthor().toLowerCase().contains(author.toLowerCase())
+                    && i.getAlbum().contains(album)){
+                    sortedList.add(i)
+                }
+            }
+        }
+        sortedMusicPaths.value = sortedList
+    }
+
+    fun setSortedPathAsDefault(){
+        album = ""
+        author = ""
+        sortedMusicPaths.value = musicPaths
+    }
+
+    fun getData() = sortedMusicPaths
+
+    fun getAlbums() = albumsList
 
     fun loadData() {
         GlobalScope.launch {
@@ -36,11 +75,14 @@ object Repository {
                 }
             }
             sortedMusicPaths.postValue(list)
+            albumsList = database.uriDao().selectUniqueAlbums().map { AlbumItem(it) }
         }
 
     }
 
+
     fun refillDatabase(){
+        Log.d("loadingInfo","refill")
         GlobalScope.launch {
             val values = FolderScanner.getMediaFileList()
             for (i in values){
@@ -48,10 +90,12 @@ object Repository {
                 launch(Dispatchers.IO){
                     var title: String? = null
                     var author: String? = null
+                    var album = ""
                     try{
                         metadataRetriever.setDataSource(MyApplication.getApplicationContext(), i)
                         title = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
                         author  = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
+                        album  = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM) ?: ""
                     }
                     catch (e: RuntimeException){
 
@@ -65,9 +109,11 @@ object Repository {
                             UriEntity(
                                 i.toString(),
                                 title,
-                                author))
+                                author,
+                                album))
                     }
                     if (i==values[values.lastIndex]){
+                        Log.d("loadingInfo","loadDataAfterRefill")
                         loadData()
                     }
                 }
@@ -75,7 +121,6 @@ object Repository {
         }
 
     }
-    fun getData() = sortedMusicPaths
 
     fun getNextSong(songItem: SongItem): SongItem?{
         var sortedList = sortedMusicPaths.value!!
@@ -128,14 +173,7 @@ object Repository {
         return null
     }
 
-    fun setFilteredList(text: String){
-        var sortedList = ArrayList<SongItem>()
-        for (i in musicPaths){
-            if (i.getTitle().toLowerCase().contains(text.toLowerCase())
-                || i.getAuthor().toLowerCase().contains(text.toLowerCase())){
-                sortedList.add(i)
-            }
-        }
-        sortedMusicPaths.value = sortedList
-    }
+
+
+
 }

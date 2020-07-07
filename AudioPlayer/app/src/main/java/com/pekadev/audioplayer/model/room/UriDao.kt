@@ -15,4 +15,7 @@ interface UriDao{
 
     @Query("Select * from UriEntity order by title")
     fun selectAllUri(): List<UriEntity>
+
+    @Query("Select album, author, count(uri), uri from UriEntity group by album, author")
+    fun selectUniqueAlbums(): List<Album>
 }

@@ -18,10 +18,12 @@ class SongItem {
     private lateinit var uri:Uri
     private var title: String? = null
     private var author: String? = null
+    private var album: String? = null
     private var metadataRetriever: MediaMetadataRetriever? = null
     private var bitmap: String? = null
     fun getTitle() = title!!
     fun getAuthor() = author!!
+    fun getAlbum() = album!!
     fun getCover() = bitmapStorage[bitmap?:""] ?: defaultBitmap
 
     fun getUri() = uri
@@ -46,6 +48,7 @@ class SongItem {
             val songItem = SongItem()
             songItem.title = entity.title
             songItem.author = entity.author
+            songItem.album = entity.album
             songItem.uri = Uri.parse(entity.uri)
             GlobalScope.launch {
                 try {
@@ -53,6 +56,7 @@ class SongItem {
                     metadataRetriever.setDataSource(MyApplication.getApplicationContext(), songItem.uri)
                     var bitmap: Bitmap? = BitmapFactory.decodeByteArray(metadataRetriever.embeddedPicture, 0, metadataRetriever.embeddedPicture.size)
                     songItem.bitmap = bitmapStorage.putAndGetKey(entity.uri, bitmap!!)
+                    //Log.d("Album", metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM)+" "+songItem.getCover())
                 }
                 catch (e: Exception){
                 }
