@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.pekadev.audioplayer.Util
 import com.pekadev.audioplayer.model.AlbumItem
 import com.pekadev.audioplayer.model.FolderScanner
+import com.pekadev.audioplayer.model.FolderScanner.scanAudioUrisAndLoadToDatabase
 import com.pekadev.audioplayer.model.SongItem
 import com.pekadev.audioplayer.model.room.Album
 import com.pekadev.audioplayer.model.room.UriDatabase
@@ -23,14 +24,14 @@ object Repository {
     private val sortedMusicPaths = MutableLiveData<ArrayList<SongItem>>()
     private var albumsList = emptyList<AlbumItem>()
     private val database = UriDatabase.getDatabase()
-    private var album = ""
-    private var author = ""
+    private var album: String? = null
+    private var author: String? = null
     fun setAlbum(album: String){this.album = album}
     fun setAuthor(author: String){this.author = author}
-
+    fun isDefaultAlbum() = album==null && author==null
     fun setFilteredList(title: String = ""){
         var sortedList = ArrayList<SongItem>()
-        if (author.isEmpty()&& album.isEmpty()) {
+        if (isDefaultAlbum()) {
             for (i in musicPaths){
                 if (i.getTitle().toLowerCase().contains(title.toLowerCase())
                     || i.getAuthor().toLowerCase().contains(title.toLowerCase())){
@@ -41,8 +42,9 @@ object Repository {
         else{
             for (i in musicPaths){
                 if (i.getTitle().toLowerCase().contains(title.toLowerCase())
-                    && i.getAuthor().toLowerCase().contains(author.toLowerCase())
-                    && i.getAlbum().contains(album)){
+                    && i.getAuthor().toLowerCase() == author!!.toLowerCase()
+                    && i.getAlbum() == album!!
+                ){
                     sortedList.add(i)
                 }
             }
@@ -51,8 +53,8 @@ object Repository {
     }
 
     fun setSortedPathAsDefault(){
-        album = ""
-        author = ""
+        album = null
+        author = null
         sortedMusicPaths.value = musicPaths
     }
 
@@ -66,7 +68,7 @@ object Repository {
             val list = ArrayList<SongItem>()
             musicPaths = (list)
             for (i in data.indices){
-                val song = SongItem.createSongItem(data[i])
+                val song = SongItem(data[i])
                 if (song!=null){
                     list.add(song)
                 }
@@ -84,42 +86,8 @@ object Repository {
     fun refillDatabase(){
         Log.d("loadingInfo","refill")
         GlobalScope.launch {
-            val values = FolderScanner.getMediaFileList()
-            for (i in values){
-                var metadataRetriever = MediaMetadataRetriever()
-                launch(Dispatchers.IO){
-                    var title: String? = null
-                    var author: String? = null
-                    var album = ""
-                    try{
-                        metadataRetriever.setDataSource(MyApplication.getApplicationContext(), i)
-                        title = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
-                        author  = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
-                        album  = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM) ?: ""
-                    }
-                    catch (e: RuntimeException){
-
-                    }
-                    finally {
-                        if (title==null || author==null){
-                            title = Util.getNameByUri(i)
-                            author = ""
-                        }
-                        database.uriDao().insertUri(
-                            UriEntity(
-                                i.toString(),
-                                title,
-                                author,
-                                album))
-                    }
-                    if (i==values[values.lastIndex]){
-                        Log.d("loadingInfo","loadDataAfterRefill")
-                        loadData()
-                    }
-                }
-            }
+            scanAudioUrisAndLoadToDatabase(::loadData)
         }
-
     }
 
     fun getNextSong(songItem: SongItem): SongItem?{

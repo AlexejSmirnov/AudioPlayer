@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         loadMusicList()
+        title = "All songs"
         supportFragmentManager.beginTransaction().replace(R.id.song_controller_fragment, songControllerFragment).commit()
         supportFragmentManager.beginTransaction().replace(R.id.song_list_frame_layout, songListFragment).commit()
     }
@@ -82,20 +83,30 @@ class MainActivity : AppCompatActivity() {
         when(item.itemId){
             R.id.switch_fragment -> {
                 isDefaultSongList = !isDefaultSongList
-                songListFragment = if (isDefaultSongList){
-                    title = "All songs"
-                    listItemWithIcon.icon = getDrawable(R.drawable.default_list_icon)
-                    AudioListFragment()
+                if (isDefaultSongList){
+                    setAllSongFragment()
                 } else{
-                    title = "Albums list"
-                    listItemWithIcon.icon = getDrawable(R.drawable.album_list_icon)
-                    AlbumListFragment()
+                    setAlbumFragment()
                 }
-                Repository.setSortedPathAsDefault()
-                supportFragmentManager.beginTransaction().replace(R.id.song_list_frame_layout, songListFragment).commit()
             }
         }
         return true
+    }
+
+    fun setAlbumFragment(){
+        title = "Albums list"
+        listItemWithIcon.icon = getDrawable(R.drawable.album_list_icon)
+        songListFragment = AlbumListFragment()
+        Repository.setSortedPathAsDefault()
+        supportFragmentManager.beginTransaction().replace(R.id.song_list_frame_layout, songListFragment).commit()
+    }
+
+    fun setAllSongFragment(){
+        title = "All songs"
+        listItemWithIcon.icon = getDrawable(R.drawable.default_list_icon)
+        songListFragment = AudioListFragment()
+        Repository.setSortedPathAsDefault()
+        supportFragmentManager.beginTransaction().replace(R.id.song_list_frame_layout, songListFragment).commit()
     }
 
     fun replaceSongControllerFragment(){
@@ -115,11 +126,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (songControllerFragment is AudioSwitcherFragment){
-            super.onBackPressed()
+        if (songControllerFragment is AudioPageFragment){
+            replaceSongControllerFragment()
+        }
+        else if (songListFragment is AudioListFragment && !Repository.isDefaultAlbum()){
+            setAlbumFragment()
         }
         else{
-            replaceSongControllerFragment()
+            super.onBackPressed()
         }
     }
 

@@ -63,8 +63,7 @@ class ExoPlayerController : PlayerController{
         if (songItem==null){
             return
         }
-
-        val mediaSource = buildMediaSource(songItem.getUri())
+        val mediaSource = buildMediaSource(songItem.getUri()!!)
         player.prepare(mediaSource)
         player.playWhenReady = true
         setSong(songItem)
