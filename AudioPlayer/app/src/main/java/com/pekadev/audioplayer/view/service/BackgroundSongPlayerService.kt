@@ -2,11 +2,13 @@ package com.pekadev.audioplayer.view.service
 
 import android.app.Service
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.IBinder
 import com.pekadev.audioplayer.model.SongItem
 import com.pekadev.audioplayer.repositoty.Repository
 import com.pekadev.audioplayer.player.PlayerController
 import com.pekadev.audioplayer.player.PlayerControllerGranter
+import com.pekadev.audioplayer.view.broadcast.StopOnHeadphoneExtractionBroadcast
 
 
 class BackgroundSongPlayerService : Service(){
@@ -15,12 +17,19 @@ class BackgroundSongPlayerService : Service(){
     var notificationBuilder = MusicNotificationBuilder()
     init {
         mediaPlayer.bindService(this)
-
     }
     val notificationId = 1
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
+    }
+
+    override fun onCreate() {
+        val receiver = StopOnHeadphoneExtractionBroadcast()
+        val filter = IntentFilter().apply {
+            addAction(Intent.ACTION_HEADSET_PLUG)
+        }
+        registerReceiver(receiver, filter)
     }
 
     private fun handleIntent(intent: Intent?) {
