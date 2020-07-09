@@ -3,7 +3,7 @@
     <data>
         <variable
             name="songItem"
-            type="com.pekadev.audioplayer.model.SongItem"/>
+            type="com.resdev.audioplayer.model.items.SongItem"/>
     </data>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -15,7 +15,7 @@
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground">
 
-    <com.pekadev.audioplayer.view.customview.CustomCoverImageView
+    <com.resdev.audioplayer.view.customview.CustomCoverImageView
         android:id="@+id/song_cover"
         android:layout_width="64dp"
         android:layout_height="64dp"
