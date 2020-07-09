@@ -7,10 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.pekadev.audioplayer.R
+import com.pekadev.audioplayer.databinding.MusicItemBinding
 import com.pekadev.audioplayer.model.SongItem
 import com.pekadev.audioplayer.view.customview.CustomCoverImageView
 import com.pekadev.audioplayer.view.application.MyApplication
@@ -26,20 +29,20 @@ class MusicListAdapter : ListAdapter<SongItem, MusicListAdapter.MusicViewHolder>
                 oldItem: SongItem,
                 newItem: SongItem
             ): Boolean {
-                return oldItem.getTitle()!=newItem.getTitle()
+                return oldItem.title!=newItem.title
             }
 
             override fun areContentsTheSame(
                 oldItem: SongItem,
                 newItem: SongItem
             ): Boolean {
-                return oldItem.getTitle()!=newItem.getTitle()
+                return oldItem.title!=newItem.title
             }
         }
     }
 
     //Responsible for animation of cover's view
-    class MusicViewHolder(view: View) : RecyclerView.ViewHolder(view){
+    class MusicViewHolder(var binding: MusicItemBinding) : RecyclerView.ViewHolder(binding.root){
         var item: SongItem? = null
         var songController = PlayerControllerGranter.getController()
         init {
@@ -47,55 +50,54 @@ class MusicListAdapter : ListAdapter<SongItem, MusicListAdapter.MusicViewHolder>
                 if (item!=it){
                     if(itemView.song_cover.coverStateWithRing){
                         if (songController.getLastSong()==item){
-                            Log.d("Adapter", "stopForeground "+item?.getTitle())
+                            Log.d("Adapter", "stopForeground "+item?.title)
                             itemView.song_cover.stopRing()
                         }
                         else{
-                            Log.d("Adapter", "stopBackground "+item?.getTitle())
+                            Log.d("Adapter", "stopBackground "+item?.title)
                             itemView.song_cover.rushStopRing()
                         }
-
                     }
                 }
                 else{
                     if(itemView.song_cover.coverStateWithRing && songController.getSong()==null){
-                        Log.d("Adapter", "pause "+item?.getTitle())
+                        Log.d("Adapter", "pause "+item?.title)
                         itemView.song_cover.stopRing()
                     }
                     else{
-                        Log.d("Adapter", "start "+item?.getTitle())
+                        Log.d("Adapter", "start "+item?.title)
                         itemView.song_cover.startRing()
                     }
                 }
             }
         }
+        fun bind(item: SongItem) {
+            binding.songItem = item
+            binding.executePendingBindings()
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicViewHolder {
-        val value = LayoutInflater.from(parent.context)
-            .inflate(R.layout.music_item, parent, false)
-        return MusicViewHolder(value)
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = DataBindingUtil.inflate<MusicItemBinding>(inflater, R.layout.music_item, parent, false)
+        return MusicViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: MusicViewHolder, position: Int) {
         holder.item = getItem(position)
-        holder.itemView.song_title.text = holder.item!!.getTitle()
-        holder.itemView.song_artist.text = holder.item!!.getAuthor()
-        holder.itemView.song_cover.setImageBitmap(holder.item!!.getCover())
+        holder.bind(holder.item!!)
         (holder.itemView.song_cover as CustomCoverImageView).ringRadius = if (holder.item == songController.getSong()) 30 else 0
         holder.itemView.setOnClickListener {
             var intent = Intent(
                 MyApplication.getApplicationContext(),
                 BackgroundSongPlayerService::class.java
             )
-            intent.putExtra("SongUri", holder.item!!.getUri().toString())
+            intent.putExtra("SongUri", holder.item!!.uri.toString())
             setIntentAction(intent, holder.item)
             ContextCompat.startForegroundService(MyApplication.getApplicationContext(), intent)
 
         }
     }
-
-
 
     //action in the intent that is sent to the service
     fun setIntentAction(intent: Intent, songItem: SongItem?){

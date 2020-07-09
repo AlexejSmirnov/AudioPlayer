@@ -56,8 +56,8 @@ class AudioPageFragment : Fragment(){
         }
         else{
             audio_page_pauseplay.setImageDrawable(resources.getDrawable(R.drawable.ic_pause_black_24dp))
-            audio_page_author.text = item.getAuthor()
-            audio_page_title.text = item.getTitle()
+            audio_page_author.text = item.author
+            audio_page_title.text = item.title
             audio_page_cover_view.setImageBitmap(item.getCover())
             setRepeatType()
         }

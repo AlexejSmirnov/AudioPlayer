@@ -68,8 +68,8 @@ class AudioSwitcherFragment : Fragment(){
     fun setData(songItem: SongItem){
         showFragment()
         controller_song_cover.setImageBitmap(songItem.getCover())
-        controller_title_text.text = songItem.getTitle()
-        controller_artist_text.text = songItem.getAuthor()
+        controller_title_text.text = songItem.title
+        controller_artist_text.text = songItem.author
     }
 
     fun hideFragment(){

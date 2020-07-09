@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.widget.ImageView
+import androidx.databinding.BindingAdapter
 import com.pekadev.audioplayer.model.BitmapStorage.bitmapStorage
 import com.pekadev.audioplayer.model.BitmapStorage.putAndGetKey
 import com.pekadev.audioplayer.model.room.UriEntity
@@ -12,11 +14,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class SongItem(entity: UriEntity) {
-    private var uri = Uri.parse(entity.uri)
-    private var title = entity.title
-    private var author= entity.author
-    private var album = entity.album
-    private var bitmapKey: String? = null
+    val uri = Uri.parse(entity.uri)
+    val title = entity.title
+    val author= entity.author
+    val album = entity.album
+    var bitmapKey: String? = null
     init {
         GlobalScope.launch {
             try {
@@ -29,17 +31,23 @@ class SongItem(entity: UriEntity) {
             }
         }
     }
-    fun getTitle() = title!!
-    fun getAuthor() = author!!
-    fun getAlbum() = album!!
+
     fun getCover() = bitmapStorage[bitmapKey?:""] ?: BitmapStorage.defaultBitmap
 
-    fun getUri() = uri
+    companion object{
+        @JvmStatic
+        @BindingAdapter("bitmapKey")
+        fun setCoverToView(view: ImageView, bitmapKey: String?){
+            view.setImageBitmap(bitmapStorage[bitmapKey?:""] ?: BitmapStorage.defaultBitmap)
+        }
+    }
+
+
     override fun equals(other: Any?): Boolean {
         if (other !is SongItem) {
             return false
     }
-        return uri == other.getUri()
+        return uri == other.uri
     }
 
 

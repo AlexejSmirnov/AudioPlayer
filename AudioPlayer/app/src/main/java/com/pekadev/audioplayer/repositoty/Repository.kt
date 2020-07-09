@@ -33,17 +33,17 @@ object Repository {
         var sortedList = ArrayList<SongItem>()
         if (isDefaultAlbum()) {
             for (i in musicPaths){
-                if (i.getTitle().toLowerCase().contains(title.toLowerCase())
-                    || i.getAuthor().toLowerCase().contains(title.toLowerCase())){
+                if (i.title.toLowerCase().contains(title.toLowerCase())
+                    || i.author.toLowerCase().contains(title.toLowerCase())){
                     sortedList.add(i)
                 }
             }
         }
         else{
             for (i in musicPaths){
-                if (i.getTitle().toLowerCase().contains(title.toLowerCase())
-                    && i.getAuthor().toLowerCase() == author!!.toLowerCase()
-                    && i.getAlbum() == album!!
+                if (i.title.toLowerCase().contains(title.toLowerCase())
+                    && i.author.toLowerCase() == author!!.toLowerCase()
+                    && i.album == album!!
                 ){
                     sortedList.add(i)
                 }
@@ -135,7 +135,7 @@ object Repository {
     fun getSongByUri(uri: String):SongItem?{
         val realUri = Uri.parse(uri)
         for (i in musicPaths){
-            if (i.getUri()==realUri)
+            if (i.uri==realUri)
                 return i
         }
         return null
