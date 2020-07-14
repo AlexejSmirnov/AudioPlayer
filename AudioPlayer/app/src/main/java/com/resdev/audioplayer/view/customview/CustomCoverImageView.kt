@@ -1,10 +1,12 @@
 package com.resdev.audioplayer.view.customview
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.os.Build
 import android.util.AttributeSet
-import com.resdev.audioplayer.view.customview.AnimationCounter.startAnimationCounter
+import android.util.Log
+import androidx.core.animation.doOnEnd
 import com.resdev.audioplayer.R
 
 
@@ -12,9 +14,17 @@ class CustomCoverImageView(context: Context, attributeSet: AttributeSet): androi
     var coverStateWithRing = false
     var ringRadius = 0
     var playBitmap = getBitmap(context, R.drawable.ic_play_arrow_white)
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-
+    private val valueAnimator = ValueAnimator()
+    init {
+        valueAnimator.setIntValues(0, 30)
+        valueAnimator.duration = 300
+        valueAnimator.addUpdateListener {
+            invalidate()
+            ringRadius = it.animatedValue as Int
+        }
+        valueAnimator.doOnEnd {
+            invalidate()
+        }
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -32,13 +42,14 @@ class CustomCoverImageView(context: Context, attributeSet: AttributeSet): androi
     fun startRing(){
         if (coverStateWithRing){return}
         coverStateWithRing = true
-        startAnimationCounter(0, 30, 300, this)
+        valueAnimator.start()
     }
     //Reverse animation
     fun stopRing(){
+        requestLayout()
         if (!coverStateWithRing){return}
         coverStateWithRing = false
-        startAnimationCounter(30, 0, 300, this)
+        valueAnimator.reverse()
 
     }
     //Set view to default state
@@ -46,6 +57,7 @@ class CustomCoverImageView(context: Context, attributeSet: AttributeSet): androi
         if (!coverStateWithRing){return}
         coverStateWithRing = false
         ringRadius = 0
+        invalidate()
     }
 
     private var ringPaint: Paint = Paint()
@@ -57,7 +69,7 @@ class CustomCoverImageView(context: Context, attributeSet: AttributeSet): androi
 
 
     private fun getBitmap(context: Context, vectorDrawableId: Int): Bitmap? {
-        var bitmap: Bitmap? = null
+        var bitmap: Bitmap?
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             val vectorDrawable = context.getDrawable(vectorDrawableId)
             bitmap = Bitmap.createBitmap(

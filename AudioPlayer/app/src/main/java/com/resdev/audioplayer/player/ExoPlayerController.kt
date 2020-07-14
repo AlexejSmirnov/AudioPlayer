@@ -2,6 +2,7 @@ package com.resdev.audioplayer.player
 
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.audio.AudioAttributes

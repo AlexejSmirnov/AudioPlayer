@@ -47,6 +47,7 @@ class MusicListAdapter : ListAdapter<SongItem, MusicListAdapter.MusicViewHolder>
             songController.getObservableSong().observeForever{
                 if (item!=it){
                     if(itemView.song_cover.coverStateWithRing){
+                        itemView.invalidate()
                         if (songController.getLastSong()==item){
                             Log.d("Adapter", "stopForeground "+item?.title)
                             itemView.song_cover.stopRing()
@@ -58,6 +59,7 @@ class MusicListAdapter : ListAdapter<SongItem, MusicListAdapter.MusicViewHolder>
                     }
                 }
                 else{
+                    itemView.invalidate()
                     if(itemView.song_cover.coverStateWithRing && songController.getSong()==null){
                         Log.d("Adapter", "pause "+item?.title)
                         itemView.song_cover.stopRing()

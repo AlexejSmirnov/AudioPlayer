@@ -5,6 +5,7 @@ import android.database.Cursor
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
 import com.resdev.audioplayer.utils.Util
 import com.resdev.audioplayer.model.room.UriDatabase
 import com.resdev.audioplayer.model.room.UriEntity
@@ -20,9 +21,7 @@ object FolderScanner {
      fun scanAudioUrisAndLoadToDatabase(onFinishCallback: (() -> Unit)? = null) {
          val contentResolver: ContentResolver =
              MyApplication.getApplicationContext().contentResolver
-
          val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-
          val cursor: Cursor? = contentResolver.query(
              uri,  // Uri
              null,

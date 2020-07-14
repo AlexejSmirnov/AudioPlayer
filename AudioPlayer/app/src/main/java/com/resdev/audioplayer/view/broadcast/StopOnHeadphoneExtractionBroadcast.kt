@@ -8,7 +8,9 @@ import com.resdev.audioplayer.player.PlayerControllerGranter
 class StopOnHeadphoneExtractionBroadcast : BroadcastReceiver(){
     var player = PlayerControllerGranter.getController()
     override fun onReceive(context: Context?, intent: Intent?) {
-        player.pause()
+        if (intent?.action == Intent.ACTION_HEADSET_PLUG && !isInitialStickyBroadcast){
+            player.pause()
+        }
     }
 
 }

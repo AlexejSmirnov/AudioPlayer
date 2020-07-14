@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private var songControllerFragment: Fragment = AudioSwitcherFragment()
     private var songListFragment: Fragment = AudioListFragment()
     private lateinit var searchItem: MenuItem
+    private lateinit var albumItem: MenuItem
     private var isDefaultSongList = true
     private lateinit var listItemWithIcon: MenuItem
     val EXTERNAL_PERMS = arrayOf(
@@ -51,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         inflater.inflate(R.menu.main_activity_menu, menu)
         listItemWithIcon = menu?.findItem(R.id.switch_fragment)!!
         searchItem = menu?.findItem(R.id.app_bar_search)!!
+        albumItem = menu?.findItem(R.id.switch_fragment)!!
         val searchView = searchItem!!.actionView as SearchView
         searchView.setOnQueryTextListener(object :
             SearchView.OnQueryTextListener {
@@ -112,12 +114,14 @@ class MainActivity : AppCompatActivity() {
                 AudioPageFragment()
              supportFragmentManager.beginTransaction().replace(R.id.song_controller_fragment, songControllerFragment).commit()
              searchItem.isVisible = false
+             albumItem.isVisible = false
         } else{
              song_controller_fragment.layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
              songControllerFragment =AudioSwitcherFragment()
              supportFragmentManager.beginTransaction().replace(R.id.song_controller_fragment, songControllerFragment).commit()
              (songControllerFragment as AudioSwitcherFragment).changeFragmentAnimation()
              searchItem.isVisible = true
+             albumItem.isVisible = true
         }
     }
 
