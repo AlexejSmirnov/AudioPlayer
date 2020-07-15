@@ -79,7 +79,6 @@ object Repository {
 
 
     fun refillDatabase(){
-        Log.d("loadingInfo","refill")
         GlobalScope.launch {
             scanAudioUrisAndLoadToDatabase(::loadData)
         }
