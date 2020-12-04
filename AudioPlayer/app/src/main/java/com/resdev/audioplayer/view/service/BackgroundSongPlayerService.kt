@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.IBinder
+import android.util.Log
 import com.resdev.audioplayer.model.items.SongItem
 import com.resdev.audioplayer.repositoty.Repository
 import com.resdev.audioplayer.player.PlayerController
@@ -25,6 +26,7 @@ class BackgroundSongPlayerService : Service(){
     }
 
     override fun onCreate() {
+        Log.d("ServiceCreate", "onCreate: ")
         val receiver = StopOnHeadphoneExtractionBroadcast()
         val filter = IntentFilter().apply {
             addAction(Intent.ACTION_HEADSET_PLUG)
@@ -34,7 +36,7 @@ class BackgroundSongPlayerService : Service(){
 
     private fun handleIntent(intent: Intent?) {
         when(intent?.action){
-            "start"->start(intent!!.getStringExtra("SongUri"))
+            "start"->start(intent.getStringExtra("SongUri"))
             "pause" -> pauseOrResume()
             "next"->  mediaPlayer.next()
             "previous"->mediaPlayer.previous()
@@ -52,7 +54,10 @@ class BackgroundSongPlayerService : Service(){
     }
 
     private fun start(songItem: String){
-        mediaPlayer.start(Repository.getSongByUri(songItem)!!)
+        Repository.getSongByUri(songItem)?.let {
+            mediaPlayer.start(it)
+        }
+
     }
 
     private fun pauseOrResume(){

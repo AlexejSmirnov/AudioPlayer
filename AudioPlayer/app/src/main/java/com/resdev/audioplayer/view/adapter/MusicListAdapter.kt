@@ -40,40 +40,32 @@ class MusicListAdapter : ListAdapter<SongItem, MusicListAdapter.MusicViewHolder>
     }
 
     //Responsible for animation of cover's view
-    class MusicViewHolder(var binding: MusicItemBinding) : RecyclerView.ViewHolder(binding.root){
+    inner class MusicViewHolder(var binding: MusicItemBinding) : RecyclerView.ViewHolder(binding.root){
         var item: SongItem? = null
-        var songController = PlayerControllerGranter.getController()
+        private var cover = itemView.song_cover
         init {
             songController.getObservableSong().observeForever{
-                if (item!=it){
-                    if(itemView.song_cover.coverStateWithRing){
-                        itemView.invalidate()
-                        if (songController.getLastSong()==item){
-                            Log.d("Adapter", "stopForeground "+item?.title)
-                            itemView.song_cover.stopRing()
-                        }
-                        else{
-                            Log.d("Adapter", "stopBackground "+item?.title)
-                            itemView.song_cover.rushStopRing()
-                        }
-                    }
+                if (it == item){
+                    cover.startRing()
                 }
-                else{
-                    itemView.invalidate()
-                    if(itemView.song_cover.coverStateWithRing && songController.getSong()==null){
-                        Log.d("Adapter", "pause "+item?.title)
-                        itemView.song_cover.stopRing()
-                    }
-                    else{
-                        Log.d("Adapter", "start "+item?.title)
-                        itemView.song_cover.startRing()
-                    }
+                else if(it != item && cover.coverStateWithRing){
+                    cover.stopRing()
                 }
             }
         }
         fun bind(item: SongItem) {
             binding.songItem = item
+            setState()
             binding.executePendingBindings()
+        }
+
+        fun setState(){
+            if (songController.getSong()==item){
+                cover.setPlayed()
+            }
+            else{
+                cover.setDefault()
+            }
         }
     }
 
@@ -85,17 +77,19 @@ class MusicListAdapter : ListAdapter<SongItem, MusicListAdapter.MusicViewHolder>
 
     override fun onBindViewHolder(holder: MusicViewHolder, position: Int) {
         holder.item = getItem(position)
-        holder.bind(holder.item!!)
+        holder.item?.let {
+            holder.bind(it)
+        }
+
         (holder.itemView.song_cover as CustomCoverImageView).ringRadius = if (holder.item == songController.getSong()) 30 else 0
         holder.itemView.setOnClickListener {
             var intent = Intent(
                 MyApplication.getApplicationContext(),
                 BackgroundSongPlayerService::class.java
             )
-            intent.putExtra("SongUri", holder.item!!.uri.toString())
+            intent.putExtra("SongUri", holder.item?.uri.toString())
             setIntentAction(intent, holder.item)
             ContextCompat.startForegroundService(MyApplication.getApplicationContext(), intent)
-
         }
     }
 
