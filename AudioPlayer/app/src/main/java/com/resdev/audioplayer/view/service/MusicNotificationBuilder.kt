@@ -8,8 +8,8 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.resdev.audioplayer.R
 import com.resdev.audioplayer.model.items.SongItem
-import com.resdev.audioplayer.view.application.MyApplication
 import com.resdev.audioplayer.view.activity.MainActivity
+import com.resdev.audioplayer.view.application.MyApplication
 
 class MusicNotificationBuilder{
     lateinit var notificationBuilder: NotificationCompat.Builder

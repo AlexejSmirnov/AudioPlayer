@@ -19,10 +19,7 @@ import com.resdev.audioplayer.view.fragment.AudioListFragment
 import com.resdev.audioplayer.view.fragment.audiopage.AudioPageFragment
 import com.resdev.audioplayer.view.fragment.switcherfragment.AudioSwitcherFragment
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -35,8 +32,9 @@ class MainActivity : AppCompatActivity() {
     val EXTERNAL_PERMS = arrayOf(
         Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE
     )
-
     val EXTERNAL_REQUEST = 138
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -50,10 +48,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.main_activity_menu, menu)
-        listItemWithIcon = menu?.findItem(R.id.switch_fragment)!!
-        searchItem = menu?.findItem(R.id.app_bar_search)!!
-        albumItem = menu?.findItem(R.id.switch_fragment)!!
-        val searchView = searchItem!!.actionView as SearchView
+        menu?.let {
+            listItemWithIcon = it.findItem(R.id.switch_fragment)
+            searchItem = it.findItem(R.id.app_bar_search)
+            albumItem = it.findItem(R.id.switch_fragment)
+
+        }
+        val searchView = searchItem.actionView as SearchView
         searchView.setOnQueryTextListener(object :
             SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
@@ -64,7 +65,6 @@ class MainActivity : AppCompatActivity() {
                     false
                 }
             }
-
             override fun onQueryTextChange(newText: String): Boolean {
                 return try{
                     Repository.setFilteredList(newText)
@@ -150,7 +150,7 @@ class MainActivity : AppCompatActivity() {
         if(!canAccessExternalSd()){
             requestPermission()
         }
-        GlobalScope.launch {
+        CoroutineScope(Dispatchers.Default).launch {
             while (!canAccessExternalSd()){
             }
             withContext(Dispatchers.Main){

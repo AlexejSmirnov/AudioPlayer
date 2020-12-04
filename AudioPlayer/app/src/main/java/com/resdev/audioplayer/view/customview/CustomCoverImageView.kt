@@ -2,10 +2,11 @@ package com.resdev.audioplayer.view.customview
 
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.*
-import android.os.Build
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.util.AttributeSet
-import android.util.Log
 import androidx.core.animation.doOnEnd
 import com.resdev.audioplayer.R
 import com.resdev.audioplayer.view.application.MyApplication

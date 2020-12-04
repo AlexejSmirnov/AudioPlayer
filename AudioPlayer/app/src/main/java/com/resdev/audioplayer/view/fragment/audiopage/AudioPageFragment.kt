@@ -9,9 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
 import com.resdev.audioplayer.R
-import com.resdev.audioplayer.utils.Util.millisToStringTime
 import com.resdev.audioplayer.model.items.SongItem
 import com.resdev.audioplayer.player.PlayerControllerGranter
+import com.resdev.audioplayer.utils.Util.millisToStringTime
 import com.resdev.audioplayer.view.activity.MainActivity
 import com.resdev.audioplayer.view.fragment.audiopage.swipe.GestureListener
 import com.resdev.audioplayer.view.fragment.audiopage.swipe.OnSwipeTouchListener

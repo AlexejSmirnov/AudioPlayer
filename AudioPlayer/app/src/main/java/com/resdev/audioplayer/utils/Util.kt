@@ -8,9 +8,15 @@ import com.resdev.audioplayer.view.application.MyApplication
 
 object Util {
     fun getNameByUri(uri: Uri): String{
-        val c: Cursor = MyApplication.getApplicationContext().contentResolver.query(uri, null, null, null, null)!!
-        c.moveToFirst()
-        return c.getString(c.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+        var name = ""
+        MyApplication.getApplicationContext()
+            .contentResolver
+            ?.query(uri, null, null, null, null)?.let {
+            it.moveToFirst()
+            name = it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+            it.close()
+        }
+        return name
     }
 
     fun millisToStringTime(millis: Long):String{

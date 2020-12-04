@@ -1,13 +1,13 @@
 package com.resdev.audioplayer.repositoty
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.resdev.audioplayer.model.items.AlbumItem
 import com.resdev.audioplayer.model.FolderScanner.scanAudioUrisAndLoadToDatabase
+import com.resdev.audioplayer.model.items.AlbumItem
 import com.resdev.audioplayer.model.items.SongItem
 import com.resdev.audioplayer.model.room.UriDatabase
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 
 object Repository {
@@ -33,8 +33,8 @@ object Repository {
         else{
             for (i in musicPaths){
                 if (i.title.toLowerCase().contains(title.toLowerCase())
-                    && i.author.toLowerCase() == author!!.toLowerCase()
-                    && i.album == album!!
+                    && i.author.toLowerCase() == author?.toLowerCase()
+                    && i.album == album
                 ){
                     sortedList.add(i)
                 }
@@ -54,7 +54,7 @@ object Repository {
     fun getAlbums() = albumsList
 
     fun loadData() {
-        GlobalScope.launch {
+        CoroutineScope(IO).launch {
             val data = database.uriDao().selectAllUri()
             val list = ArrayList<SongItem>()
             musicPaths = (list)
@@ -79,49 +79,31 @@ object Repository {
 
 
     fun refillDatabase(){
-        GlobalScope.launch {
+        CoroutineScope(IO).launch {
             scanAudioUrisAndLoadToDatabase(::loadData)
         }
     }
 
     fun getNextSong(songItem: SongItem): SongItem?{
-        var sortedList = sortedMusicPaths.value!!
-        var index: Int = sortedList.indexOf(songItem)
-        if (index != -1){
-            return if (index==sortedList.lastIndex){
-                sortedList[0]
+        val list = if (sortedMusicPaths.value?.indexOf(songItem) == -1) sortedMusicPaths.value else musicPaths
+        return list?.let {
+            val index = it.indexOf(songItem)
+            if (index==it.lastIndex){
+                it[0]
             } else{
-                sortedList[index+1]
-            }
-        }
-        else{
-            var fullList = musicPaths
-            index = fullList.indexOf(songItem)
-            return if (index==fullList.lastIndex){
-                fullList[0]
-            } else{
-                fullList[index+1]
+                it[index+1]
             }
         }
     }
 
     fun getPreviousSong(songItem: SongItem): SongItem?{
-        var sortedList = sortedMusicPaths.value!!
-        var index: Int = sortedList.indexOf(songItem)
-        if (index != -1){
-            return if (index==0){
-                sortedList[sortedList.lastIndex]
+        val list = if (sortedMusicPaths.value?.indexOf(songItem) == -1) sortedMusicPaths.value else musicPaths
+        return list?.let {
+            val index = it.indexOf(songItem)
+            if (index==0){
+                it[sortedMusicPaths.value?.lastIndex ?: 0]
             } else{
-                sortedList[index-1]
-            }
-        }
-        else{
-            var fullList = musicPaths
-            index = fullList.indexOf(songItem)
-            return if (index==0){
-                fullList[sortedList.lastIndex]
-            } else{
-                fullList[index-1]
+                it[index-1]
             }
         }
     }

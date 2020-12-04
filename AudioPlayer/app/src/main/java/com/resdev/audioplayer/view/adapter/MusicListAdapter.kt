@@ -2,7 +2,6 @@ package com.resdev.audioplayer.view.adapter
 
 
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -13,9 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.resdev.audioplayer.R
 import com.resdev.audioplayer.databinding.MusicItemBinding
 import com.resdev.audioplayer.model.items.SongItem
-import com.resdev.audioplayer.view.customview.CustomCoverImageView
-import com.resdev.audioplayer.view.application.MyApplication
 import com.resdev.audioplayer.player.PlayerControllerGranter
+import com.resdev.audioplayer.view.application.MyApplication
+import com.resdev.audioplayer.view.customview.CustomCoverImageView
 import com.resdev.audioplayer.view.service.BackgroundSongPlayerService
 import kotlinx.android.synthetic.main.music_item.view.*
 
