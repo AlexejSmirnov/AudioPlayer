@@ -9,7 +9,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import androidx.core.animation.doOnEnd
 import com.resdev.audioplayer.R
-import com.resdev.audioplayer.view.application.MyApplication
+import com.resdev.audioplayer.MyApplication
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch

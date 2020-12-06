@@ -1,4 +1,4 @@
-package com.resdev.audioplayer.view.application
+package com.resdev.audioplayer
 
 import android.app.Application
 import android.app.NotificationChannel

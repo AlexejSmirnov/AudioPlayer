@@ -1,4 +1,4 @@
-package com.resdev.audioplayer.view.service
+package com.resdev.audioplayer.service
 
 import android.app.Service
 import android.content.Intent
@@ -9,7 +9,7 @@ import com.resdev.audioplayer.model.items.SongItem
 import com.resdev.audioplayer.player.PlayerController
 import com.resdev.audioplayer.player.PlayerControllerGranter
 import com.resdev.audioplayer.repositoty.Repository
-import com.resdev.audioplayer.view.broadcast.StopOnHeadphoneExtractionBroadcast
+import com.resdev.audioplayer.broadcast.StopOnHeadphoneExtractionBroadcast
 
 
 class BackgroundSongPlayerService : Service(){

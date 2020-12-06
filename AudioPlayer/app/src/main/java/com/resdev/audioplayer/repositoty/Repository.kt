@@ -17,30 +17,17 @@ object Repository {
     private val database = UriDatabase.getDatabase()
     private var album: String? = null
     private var author: String? = null
+
     fun setAlbum(album: String){this.album = album}
+
     fun setAuthor(author: String){this.author = author}
-    fun isDefaultAlbum() = album==null && author==null
+
+    fun isOnSpecificAlbum(): Boolean{
+        return album!= null && author!=null
+    }
+
     fun setFilteredList(title: String = ""){
-        var sortedList = ArrayList<SongItem>()
-        if (isDefaultAlbum()) {
-            for (i in musicPaths){
-                if (i.title.toLowerCase().contains(title.toLowerCase())
-                    || i.author.toLowerCase().contains(title.toLowerCase())){
-                    sortedList.add(i)
-                }
-            }
-        }
-        else{
-            for (i in musicPaths){
-                if (i.title.toLowerCase().contains(title.toLowerCase())
-                    && i.author.toLowerCase() == author?.toLowerCase()
-                    && i.album == album
-                ){
-                    sortedList.add(i)
-                }
-            }
-        }
-        sortedMusicPaths.value = sortedList
+        sortedMusicPaths.value = sortAlbum(title, musicPaths, album, author)
     }
 
     fun setSortedPathAsDefault(){

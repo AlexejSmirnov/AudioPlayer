@@ -129,7 +129,7 @@ class MainActivity : AppCompatActivity() {
         if (songControllerFragment is AudioPageFragment){
             replaceSongControllerFragment()
         }
-        else if (songListFragment is AudioListFragment && !Repository.isDefaultAlbum()){
+        else if (songListFragment is AudioListFragment && Repository.isOnSpecificAlbum()){
             setAlbumFragment()
         }
         else{

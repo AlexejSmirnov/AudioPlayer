@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.collection.LruCache
 import com.resdev.audioplayer.R
-import com.resdev.audioplayer.view.application.MyApplication
+import com.resdev.audioplayer.MyApplication
 
 object BitmapStorage {
     var defaultBitmap = BitmapFactory.decodeResource(MyApplication.getApplicationContext().resources, R.drawable.disc_pic)

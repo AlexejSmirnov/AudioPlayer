@@ -2,7 +2,7 @@ package com.resdev.audioplayer.player
 
 import androidx.lifecycle.MutableLiveData
 import com.resdev.audioplayer.model.items.SongItem
-import com.resdev.audioplayer.view.service.BackgroundSongPlayerService
+import com.resdev.audioplayer.service.BackgroundSongPlayerService
 
 interface PlayerController {
     fun bindService(service: BackgroundSongPlayerService)

@@ -3,7 +3,7 @@ package com.resdev.audioplayer.model.room
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.resdev.audioplayer.view.application.MyApplication
+import com.resdev.audioplayer.MyApplication
 
 @Database(entities = [UriEntity::class], version = 1)
 abstract class UriDatabase: RoomDatabase(){

@@ -8,7 +8,7 @@ import android.provider.MediaStore
 import com.resdev.audioplayer.model.room.UriDatabase
 import com.resdev.audioplayer.model.room.UriEntity
 import com.resdev.audioplayer.utils.Util
-import com.resdev.audioplayer.view.application.MyApplication
+import com.resdev.audioplayer.MyApplication
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"></uses-permission>
     <application
         android:allowBackup="false"
-        android:name="com.resdev.audioplayer.view.application.MyApplication"
+        android:name="com.resdev.audioplayer.MyApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -21,7 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name="com.resdev.audioplayer.view.service.BackgroundSongPlayerService" />
+        <service android:name="com.resdev.audioplayer.service.BackgroundSongPlayerService" />
     </application>
 
 </manifest>

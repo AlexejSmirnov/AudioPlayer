@@ -13,8 +13,8 @@ import com.google.android.exoplayer2.util.Util
 import com.resdev.audioplayer.R
 import com.resdev.audioplayer.model.items.SongItem
 import com.resdev.audioplayer.repositoty.Repository
-import com.resdev.audioplayer.view.application.MyApplication
-import com.resdev.audioplayer.view.service.BackgroundSongPlayerService
+import com.resdev.audioplayer.MyApplication
+import com.resdev.audioplayer.service.BackgroundSongPlayerService
 import kotlinx.coroutines.*
 
 class ExoPlayerController : PlayerController{

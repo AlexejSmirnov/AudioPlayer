@@ -10,7 +10,7 @@ import com.resdev.audioplayer.model.BitmapStorage
 import com.resdev.audioplayer.model.BitmapStorage.bitmapStorage
 import com.resdev.audioplayer.model.BitmapStorage.putAndGetKey
 import com.resdev.audioplayer.model.room.UriEntity
-import com.resdev.audioplayer.view.application.MyApplication
+import com.resdev.audioplayer.MyApplication
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 

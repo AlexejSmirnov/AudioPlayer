@@ -1,4 +1,4 @@
-package com.resdev.audioplayer.view.broadcast
+package com.resdev.audioplayer.broadcast
 
 import android.content.BroadcastReceiver
 import android.content.Context

@@ -1,9 +1,8 @@
 package com.resdev.audioplayer.utils
 
-import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
-import com.resdev.audioplayer.view.application.MyApplication
+import com.resdev.audioplayer.MyApplication
 
 
 object Util {

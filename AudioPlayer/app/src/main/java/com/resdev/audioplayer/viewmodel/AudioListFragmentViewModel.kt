@@ -8,9 +8,8 @@ import com.resdev.audioplayer.repositoty.Repository
 
 class AudioListFragmentViewModel(application: Application) : AndroidViewModel(application){
     private val _musicData = Repository.getData()
-    private val musicData: LiveData<ArrayList<SongItem>> = _musicData
 
-    fun getMusicData() = musicData
+    fun getMusicData():LiveData<ArrayList<SongItem>> = _musicData
 
 
 }

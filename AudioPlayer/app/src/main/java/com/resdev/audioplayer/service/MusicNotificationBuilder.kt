@@ -1,4 +1,4 @@
-package com.resdev.audioplayer.view.service
+package com.resdev.audioplayer.service
 
 import android.app.Notification
 import android.app.PendingIntent
@@ -9,7 +9,7 @@ import androidx.core.app.NotificationCompat
 import com.resdev.audioplayer.R
 import com.resdev.audioplayer.model.items.SongItem
 import com.resdev.audioplayer.view.activity.MainActivity
-import com.resdev.audioplayer.view.application.MyApplication
+import com.resdev.audioplayer.MyApplication
 
 class MusicNotificationBuilder{
     lateinit var notificationBuilder: NotificationCompat.Builder
